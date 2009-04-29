@@ -1,0 +1,150 @@
+XTerm*faceName:       terminus:medium:pixelsize=12
+XTerm*boldFont:       terminus:medium:pixelsize=12
+XTerm*background:     #101010
+XTerm*foreground:     #ffffff
+XTerm*cursorColor:    #ffffff
+XTerm*termName:       xterm-color
+XTerm*termType:       vt102
+XTerm*pointerShape:   left_ptr
+XTerm*internalBorder: 10
+XTerm*borderColor:    #222222
+XTerm*boldMode: false
+
+Xft.dpi: 96
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.hintstyle: hintfull
+Xft.rgba: rgb
+
+Xcursor.size: 24
+Xcursor.theme: aero
+
+ratmenu.style:            dreary
+ratmenu.align:             left
+ratmenu.bgcolor:         Grey20
+ratmenu.fgcolor:         Grey80
+ratmenu.font:            -xos4-terminus-medium-r-normal-*-14-*-*-*-*-*-iso8859-1
+ratmenu.mouse:             true
+ratmenu.scrollOffset:         5
+ratmenu.unfocusExit:         true
+
+ratmenu.style:            dreary
+ratmenu.style:            dreary
+URxvt.perl-ext-common: matcher
+URxvt.urlLauncher: firefox
+URxvt.matcher.button: 1
+URxvt.matcher.pattern.1: \\bwww\\.[\\w-]\\.[\\w./?&@#-]*[\\w/-]
+URxvt*font:               xft:Terminus:pixelsize=12
+
+URxvt.transparent: true
+URxvt.shading: 100 
+URxvt.tintColor: white
+URxvt.inheritPixmap: true
+URxvt.title: urxvt
+URxvt.scrollstyle:      plain
+URXVT.urgentOnBell:     true
+URxvt.background: #191919
+URxvt.foreground: Gray90
+URxvt.cursorColor: #ffbb00
+URxvt.borderColor: #191919
+URxvt.depth:           24
+URxvt.scrollBar:        False
+URxvt.scrollBar_Right:  True
+URxvt.saveLines:        999
+URxvt.cursorBlink:     False 
+URxvt.internalBorder: 5
+URxvt.externalBorder:   0
+URxvt*buffered:        true
+
+!Wra!th
+*color0: #000000
+*color1: #8e2d10
+*color2: #4b6826
+*color3: #b88b10
+*color4: #2d63a5
+*color5: #8e3d9d
+*color6: #33859d
+*color7: #454545
+*color8: #454545
+*color9: #cc3a0e
+*color10: #85bb40
+*color11: #e0c73d
+*color12: #4891ff
+*color13: #b954cb
+*color14: #47b4d4
+*color15: #ffffff
+
+!daisuke's
+!*color0:           #000000
+!*color8:           #505050
+!*color1:           #b04020
+!*color9:           #dd4010
+!*color2:           #afd700
+!*color10:          #daff30
+!*color3:           #ffbb00
+!*color11:          #fce70d
+!*color4:           #3060aa
+!*color12:          #6099dd
+!*color5:           #d6156c
+!*color13:          #fe4365
+!*color6:           #a0c2de
+!*color14:          #c9dee8
+!*color7:           #808080
+!*color15:          #ffffff
+
+!xterminus' (low contrast)
+!*color0:       #000000
+!*color8:       #666666
+!*color1:       #b45151
+!*color9:       #fe8686
+!*color2:       #aece92
+!*color10:      #c5ee83
+!*color3:       Khaki3
+!*color11:      #efe58b
+!*color4:       #2797d8
+!*color12:      #86cdea
+!*color5:       #aa6eaf
+!*color13:      #cb96ce
+!*color6:       #418179
+!*color14:      #71bebe
+!*color7:       #bebebe
+!*color15:      #ffffff
+
+!phrakture's (low contrast)
+!*color0:            #000000
+!*color8:            #222222
+!*color1:            #803232
+!*color9:            #982b2b
+!*color2:            #5b762f
+!*color10:           #89b83f
+!*color3:            #aa9943
+!*color11:           #efef60
+!*color4:            #324c80
+!*color12:           #2b4f98
+!*color5:            #706c9a
+!*color13:           #826ab1
+!*color6:            #92b19e
+!*color14:           #a1cdcd
+!*color7:            #ffffff
+!*color15:           #dededE
+
+!desert
+!*color0: #000000
+!*color7: #bebebe
+!*color8: #666666
+!*color9: #cf6171
+!*color10: #c5f779
+!*color11: #fff796
+!*color12: #4186be
+!*color13: #cf9ebe
+!*color14: #71bebe
+!*color15: #ffffff
+!*color1: #ffa2a5
+!*color2: #bdb66b
+!*color3: #f7e78c
+!*color4: #84cfef
+!*color5: #ce5d5a
+!*color6: #87ff87
+
+Emacs.background: #191919
+Emacs.foreground: #ffbb00

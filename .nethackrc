@@ -1,0 +1,23 @@
+OPTIONS=!autopickup,boulder:0,catname:Abercrombie,DECgraphics,dogname:Abercrombie
+OPTIONS=!legacy,name:wraith,fruit:Kiwi,horsename:Abercrombie,color,statuscolors,menucolors
+OPTIONS=pettype:none,prayconfirm,showexp,showrace,showscore,sound,standout,sparkle
+
+
+
+MENUCOLOR="* blessed *"=green
+MENUCOLOR="* holy *"=green
+MENUCOLOR="* cursed *"=red
+MENUCOLOR="* unholy *"=red
+MENUCOLOR="* cursed * (being worn)"=orange&underline
+MENUCOLOR="* uncursed *"=yellow
+
+STATUSCOLOR=hp%100=green,hp%66=yellow,hp%50=orange
+STATUSCOLOR=hp%33=red&bold,hp%15:red,hp%0:red&blink
+STATUSCOLOR=pw%100=green,pw%66=yellow,pw%50:orange,pw%33=red&bold
+STATUSCOLOR=burdened:yellow,stressed:orange,strained:red&bold
+STATUSCOLOR=overtaxed:red,overloaded:red&blink
+STATUSCOLOR=satiated:yellow,hungry:orange,weak:red&bold
+STATUSCOLOR=fainting:red,fainted:red&blink
+STATUSCOLOR=hallu:yellow,conf:orange,stun:red&bold
+STATUSCOLOR=ill:red,foodpois:red,slime:red
+STATUSCOLOR=held:red,blind:red

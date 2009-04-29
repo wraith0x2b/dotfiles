@@ -1,0 +1,10 @@
+vo=x11
+zoom=true
+fs=no
+framedrop=yes
+ffactor = 1
+#subfont-text-scale=1
+#subfont-osd-scale=1
+#osdlevel=3
+cache=8192
+really-quiet=no

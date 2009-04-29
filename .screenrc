@@ -1,0 +1,28 @@
+escape ^aa 
+startup_message off
+vbell on
+msgwait 2
+defscrollback 5000
+defutf8 on
+shell bash
+shelltitle "$ |term"
+
+backtick 1 3 3 $HOME/bin/screeninfo.sh
+
+#hardstatus alwayslastline '%{= dd} %{G}%=<   %{C}%-w%{Y}%n %t%{-}%{C}%+w   %{G}> %='
+#caption always '%{= kG} %{= kC}%= %-w%{= kY}%n %t%{-}%{kC}%+w%='
+#caption always "%{= kB} %1` %= %{= kW} %{kC} %-w%{= ky}%n %t%{= kC}%+w %{= kW} %=%{W}%C %A "
+#hardstatus alwayslastline "%{= kB} %1` %D %d/%m/%y %{W}%C %A %= %{= kW} %{kC} %-w%{= ky}%n %t%{= kC}%+w "
+#hardstatus alwayslastline "%{= dd}%{c}%-w%{= W}%n %t%{= c}%+w%=%{= c}%D %d/%m/%y %{W}%c %A"
+#hardstatus alwayslastline "%{= dd}%{w}%-w%{= y}%n %t%{= w}%+w%=%{= w}%C %A"
+#caption always "%{= B}[ %{= W}%1`%{= B} ] %="
+#hardstatus alwayslastline "%{= B}[ %{= Y}%H%{= B} ] %= %{= y}%-w%{= rY} %n %t %{-}%{=y}%+w%{= dd} %= %{= B}[ %{= Y}%C %A%{= B} ]"
+#caption always '%{= B}[ %{= W}%1`%{= B} ] %= %{= w}%?%-Lw%?%{B}( %{W}%n*%f%t%?(%u)%?%{B} )%{w}%?%+Lw%?%?%= %{B}[ %{= W}%C %A%{= B} ]'
+caption always '%{= B}[ %{= W}%1`%{= B} ]%= %{= w}%?%-Lw%?%{B}( %{W}%n*%f%t%?(%u)%?%{B} )%{w}%?%+Lw%?%?%= %{= B}[ %{= W}%C %A%{= B} ]'
+#caption always '%{= wW}%{= W}%1` %= %{= k}%?%-Lw%? %{W}%n*%f%t%?(%u)%?%{k}%?%+Lw%?%?%= %{= W}%C %A'
+#hardstatus alwayslastline '%{= Y}%{B}%-w%{W}%n %t%{B}%+w%= %1`'
+#hardstatus alwayslastline "%{= kC}: %{W}%H%{C} : %=%{r}<   %{W}%n %t   %{r}>%=%{y}%D %d/%m/%y %{W}%C %A "
+
+screen -t "rtorrent"    0 bash
+screen -t "irssi"	1 bash
+screen -t "term"	2 bash

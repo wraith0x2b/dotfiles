@@ -1,0 +1,26 @@
+define_webjump("archlinux", "http://bbs.archlinux.org");
+require("clicks-in-new-buffer.js");
+clicks_in_new_buffer_target = OPEN_NEW_BUFFER_BACKGROUND;
+require("mode-line.js");
+homepage = "http://www.google.com";
+function disable_scrollbars (buffer) {
+    buffer.browser.contentWindow.scrollbars.visible = false;
+}
+add_hook ("content_buffer_location_change_hook", disable_scrollbars);
+register_user_stylesheet(
+"data:text/css,"+
+escape("#minibuffer, tree.completions, .mode-line { font-family: Terminus; font-size: 12pt; }"));
+
+hints_auto_exit_delay = 0;
+hints_display_url_panel = true;
+hint_background_color = 'white';
+active_hint_background_color = '#00ccff';
+register_user_stylesheet(
+    "data:text/css," +
+        escape (
+            "span.__conkeror_hint {" +
+            " border: 1px solid #dddddd !important;" +
+            " color: white !important;" +
+            " background-color: black !important;" +
+            "}"));
+

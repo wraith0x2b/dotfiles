@@ -1,0 +1,107 @@
+(set-contrib-dir "/usr/share/stumpwm")
+(in-package :stumpwm)
+(setf *default-package* :stumpwm)
+
+(set-prefix-key (kbd "C-t"))
+
+;;;Variables
+(defparameter terminal "exec urxvt")
+(defparameter menu "exec `dmenu_path | dmenu`")
+
+
+(setf *startup-message* nil)
+(setf *startup-message* "^2 ^b Welcome to ^B Stump WM!^b ~&")
+(setf *mouse-focus-policy* :click)
+;(setf *debug-level* 10)
+
+;;; The Appearance
+
+;;;; The Message Window
+(set-fg-color "SkyBlue")
+(set-bg-color "black")
+(set-border-color "SkyBlue")
+(set-msg-border-width 5)
+(setf *message-window-padding* 10)
+
+(set-font "-*-terminus-medium-r-*-*-14-*-*-*-*-*-iso8859-1")
+(set-frame-outline-width 0)
+
+(setf *message-window-gravity* :ne
+      *timeout-wait*           3
+      *input-window-gravity*   :ne)
+
+
+(setq stumpwm::*suppress-frame-indicator* nil)
+
+;;;; The Mode Line
+(setf
+    *mode-line-background-color* "black"
+         *mode-line-foreground-color* "SkyBlue"
+         *mode-line-border-color*     "SkyBlue"
+	 *mode-line-border-width*     1
+         *mode-line-timeout*          1
+	 *mode-line-pad-x* 1
+	 *mode-line-pad-y* 1
+         *mode-line-screen-position* :top
+         *window-format* "%n %s %t"
+         *screen-mode-line-format*  
+        (list "Stumpwm " '(:eval (stumpwm:run-shell-command "stumpwm-status.sh" t))))
+;(enable-mode-line (current-screen) (current-head) t)
+
+;;;; Windows
+
+(set-focus-color "SkyBlue")
+(set-unfocus-color "Grey20")
+(set-normal-gravity :ne)
+(setf *normal-border-width* 1)
+(setf *maxsize-border-width* 1)
+(setf *transient-border-width* 1)
+(setf *window-border-style* :none)
+(set-win-bg-color "Grey20")
+
+;;;; Frames
+
+(setf *frame-number-map* "1234567890")
+
+
+;; utility commands
+
+(define-stumpwm-command "terminal" ()
+  (run-shell-command terminal))
+(define-stumpwm-command "menu" ()
+  (run-shell-command menu))
+   
+;;Keybind stuff
+
+(define-key *top-map* (kbd "M-S-Return") terminal)
+(define-key *top-map* (kbd "M-m") menu)
+(define-key *root-map* (kbd "o") "only")
+(define-key *root-map* (kbd "q") "remove")
+(define-key *root-map* (kbd "k") "kill")
+(define-key *root-map* (kbd "r") "loadrc")
+(define-key *root-map* (kbd "h") "vsplit")
+(define-key *root-map* (kbd "v") "hsplit")
+(define-key *top-map* (kbd "C-Right") "move-focus right")
+(define-key *top-map* (kbd "C-Left") "move-focus left")
+(define-key *top-map* (kbd "C-Up") "move-focus up")
+(define-key *top-map* (kbd "C-Down") "move-focus down")
+(define-key *top-map* (kbd "M-C-Right") "resize 20 0")
+(define-key *top-map* (kbd "M-C-Left") "resize -20 0")
+(define-key *top-map* (kbd "M-C-Up") "resize 0 20")
+(define-key *top-map* (kbd "M-C-Down") "resize 0 -20")
+(define-key *top-map* (kbd "C-m") "mark")
+(define-key *top-map* (kbd "C-p") "pull-marked")
+
+(run-commands "grename 1" "gnew 2" "gnew 3" "gnew 4" "gnew 5" "gnew 6" "gselect 1")
+
+(define-key *root-map* (kbd "C-1") "gselect 1")
+(define-key *root-map* (kbd "C-2") "gselect 2")
+(define-key *root-map* (kbd "C-3") "gselect 3")
+(define-key *root-map* (kbd "C-4") "gselect 4")
+(define-key *root-map* (kbd "C-5") "gselect 5")
+(define-key *root-map* (kbd "C-6") "gselect 6")
+(define-key *root-map* (kbd "C-7") "gselect 7")
+(define-key *root-map* (kbd "C-8") "gselect 8")
+(define-key *root-map* (kbd "C-9") "gselect 9")
+(define-key *root-map* (kbd "C-0") "gselect Default")
+(define-key *top-map* (kbd "C-b") "mode-line")
