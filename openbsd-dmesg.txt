@@ -1,0 +1,102 @@
+OpenBSD 4.5 (GENERIC) #1749: Sat Feb 28 14:51:18 MST 2009
+    deraadt@i386.openbsd.org:/usr/src/sys/arch/i386/compile/GENERIC
+cpu0: AMD Turion(tm) 64 Mobile Technology MT-34 ("AuthenticAMD" 686-class, 1024KB L2 cache) 1.81 GHz
+cpu0: FPU,V86,DE,PSE,TSC,MSR,PAE,MCE,CX8,APIC,SEP,MTRR,PGE,MCA,CMOV,PAT,PSE36,CFLUSH,MMX,FXSR,SSE,SSE2,SSE3
+real mem  = 1073115136 (1023MB)
+avail mem = 1029369856 (981MB)
+mainbus0 at root
+bios0 at mainbus0: AT/286+ BIOS, date 08/29/06, BIOS32 rev. 0 @ 0xf0010, SMBIOS rev. 2.3 @ 0xfb8b0 (37 entries)
+bios0: vendor American Megatrends Inc. version "207" date 08/29/2006
+bios0: ASUSTeK Computer Inc. A6Kt
+apm at bios0 function 0x15 not configured
+acpi0 at bios0: rev 0
+acpi0: tables DSDT FACP APIC MCFG OEMB
+acpi0: wakeup devices PS2K(S4) PS2M(S4) UAR1(S4) UAR2(S4) PCI0(S4) AC97(S4) MC97(S4) MAC_(S4) CBS0(S3) P394(S3) MPCI(S3) EUSB(S3) USB_(S3) USB2(S3) USB3(S3) SLPB(S4)
+acpitimer0 at acpi0: 3579545 Hz, 24 bits
+acpimadt0 at acpi0 addr 0xfee00000: PC-AT compat
+cpu0 at mainbus0: apid 0 (boot processor)
+cpu0: AMD erratum 89 present, BIOS upgrade may be required
+cpu0: apic clock running at 200MHz
+ioapic0 at mainbus0: apid 1 pa 0xfec00000, version 14, 24 pins
+ioapic0: misconfigured as apic 0, remapped to apid 1
+acpiprt0 at acpi0: bus 0 (PCI0)
+acpiprt1 at acpi0: bus 1 (P0P1)
+acpiec0 at acpi0
+acpicpu0 at acpi0: C3, C2, PSS
+acpitz0 at acpi0: critical temperature 105 degC
+acpiac0 at acpi0: AC unit online
+acpibat0 at acpi0: BAT0 model "A6-4222" serial   type LIon oem "ASUSTEK"
+acpibtn0 at acpi0: PWRB
+acpibtn1 at acpi0: LID_
+acpibtn2 at acpi0: SLPB
+acpivideo at acpi0 not configured
+bios0: ROM list: 0xc0000/0xfe00
+cpu0: PowerNow! K8 1801 MHz: speeds: 1800 1600 800 MHz
+pci0 at mainbus0 bus 0: configuration mode 1 (bios)
+pchb0 at pci0 dev 0 function 0 "SiS 756 PCI" rev 0x02
+ppb0 at pci0 dev 1 function 0 "SiS PCI-PCI" rev 0x00
+pci1 at ppb0 bus 1
+vga1 at pci1 dev 0 function 0 "ATI Radeon Mobility X1600" rev 0x00
+wsdisplay0 at vga1 mux 1: console (80x25, vt100 emulation)
+wsdisplay0: screen 1-5 added (80x25, vt100 emulation)
+radeondrm0 at vga1: apic 1 int 16 (irq 10)
+drm0 at radeondrm0
+pcib0 at pci0 dev 2 function 0 "SiS 964 ISA" rev 0x36
+pciide0 at pci0 dev 2 function 5 "SiS 5513 EIDE" rev 0x01: 964: DMA, channel 0 wired to compatibility, channel 1 wired to compatibility
+wd0 at pciide0 channel 0 drive 0: <IC25N080ATMR04-0>
+wd0: 16-sector PIO, LBA48, 76319MB, 156301488 sectors
+wd0(pciide0:0:0): using PIO mode 4, Ultra-DMA mode 2
+atapiscsi0 at pciide0 channel 1 drive 0
+scsibus0 at atapiscsi0: 2 targets
+cd0 at scsibus0 targ 0 lun 0: <TSSTcorp, CD/DVDW TS-L632D, AS05> ATAPI 5/cdrom removable
+cd0(pciide0:1:0): using PIO mode 4, Ultra-DMA mode 2
+"SiS 7013 Modem" rev 0xa0 at pci0 dev 2 function 6 not configured
+auich0 at pci0 dev 2 function 7 "SiS 7012 AC97" rev 0xa0: apic 1 int 18 (irq 11), SiS7012 AC97
+ac97: codec id 0x414c4720 (Avance Logic ALC650)
+ac97: codec features 20 bit DAC, 18 bit ADC, Realtek 3D
+audio0 at auich0
+"SiS 5597/5598 USB" rev 0x0f at pci0 dev 3 function 0 not configured
+"SiS 5597/5598 USB" rev 0x0f at pci0 dev 3 function 1 not configured
+"SiS 5597/5598 USB" rev 0x0f at pci0 dev 3 function 2 not configured
+ehci0 at pci0 dev 3 function 3 "SiS 7002 USB" rev 0x00: apic 1 int 23 (irq 5)
+usb0 at ehci0: USB revision 2.0
+uhub0 at usb0 "SiS EHCI root hub" rev 2.00/1.00 addr 1
+bwi0 at pci0 dev 9 function 0 "Broadcom BCM4318" rev 0x02: apic 1 int 18 (irq 11), address 00:17:31:bb:75:85
+cbb0 at pci0 dev 10 function 0 "Ricoh 5C476 CardBus" rev 0xb3: apic 1 int 17 (irq 5)
+"Ricoh 5C552 Firewire" rev 0x08 at pci0 dev 10 function 1 not configured
+sdhc0 at pci0 dev 10 function 2 "Ricoh 5C822 SD/MMC" rev 0x17: apic 1 int 19 (irq 5)
+sdmmc0 at sdhc0
+"Ricoh 5C592 Memory Stick" rev 0x08 at pci0 dev 10 function 3 not configured
+re0 at pci0 dev 11 function 0 "Realtek 8169" rev 0x10: RTL8169/8110SB (0x1000), apic 1 int 19 (irq 5), address 00:18:f3:3c:28:02
+rgephy0 at re0 phy 7: RTL8169S/8110S PHY, rev. 3
+pchb1 at pci0 dev 24 function 0 "AMD AMD64 0Fh HyperTransport" rev 0x00
+pchb2 at pci0 dev 24 function 1 "AMD AMD64 0Fh Address Map" rev 0x00
+pchb3 at pci0 dev 24 function 2 "AMD AMD64 0Fh DRAM Cfg" rev 0x00
+kate0 at pci0 dev 24 function 3 "AMD AMD64 0Fh Misc Cfg" rev 0x00
+isa0 at pcib0
+isadma0 at isa0
+com1 at isa0 port 0x2f8/8 irq 3: ns16550a, 16 byte fifo
+pckbc0 at isa0 port 0x60/5
+pckbd0 at pckbc0 (kbd slot)
+pckbc0: using irq 1 for kbd slot
+wskbd0 at pckbd0: console keyboard, using wsdisplay0
+pmsi0 at pckbc0 (aux slot)
+pckbc0: using irq 12 for aux slot
+wsmouse0 at pmsi0 mux 0
+pcppi0 at isa0 port 0x61
+midi0 at pcppi0: <PC speaker>
+spkr0 at pcppi0
+lpt0 at isa0 port 0x378/4 irq 7
+npx0 at isa0 port 0xf0/16: reported by CPUID; using exception 16
+cardslot0 at cbb0 slot 0 flags 0
+cardbus0 at cardslot0: bus 2 device 0 cacheline 0x0, lattimer 0x40
+pcmcia0 at cardslot0
+mtrr: Pentium Pro MTRR support
+ugen0 at uhub0 port 4 "Acer Labs USB2.0 Camera" rev 2.00/1.00 addr 2
+softraid0 at root
+root on wd0a swap on wd0b dump on wd0b
+umass0 at uhub0 port 1 configuration 1 interface 0 "JetFlash Mass Storage Device" rev 2.00/1.00 addr 3
+umass0: using SCSI over Bulk-Only
+scsibus1 at umass0: 2 targets, initiator 0
+sd0 at scsibus1 targ 1 lun 0: <JetFlash, Transcend 2GB, 8.07> SCSI2 0/direct removable
+sd0: 1926MB, 512 bytes/sec, 3944448 sec total

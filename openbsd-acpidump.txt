@@ -1,0 +1,5745 @@
+/*
+RSD PTR: Checksum=250, OEMID=ACPIAM, RsdtAddress=0x3ffd0000
+ */
+/*
+RSDT: Length=52, Revision=1, Checksum=121,
+	OEMID=A M I, OEM Table ID=OEMRSDT, OEM Revision=0x8000629,
+	Creator ID=MSFT, Creator Revision=0x97
+ */
+/*
+	Entries={ 0x3ffd0200, 0x3ffd0390, 0x3ffd03f0, 0x3ffde040 }
+ */
+/*
+	DSDT=0x3ffd0430
+	INT_MODEL=APIC
+	SCI_INT=9
+	SMI_CMD=0x900, ACPI_ENABLE=0xe1, ACPI_DISABLE=0x1e, S4BIOS_REQ=0x0
+	PM1a_EVT_BLK=0x800-0x803
+	PM1a_CNT_BLK=0x804-0x805
+	PM2_CNT_BLK=0x816-0x816
+	PM2_TMR_BLK=0x808-0x80b
+	PM2_GPE0_BLK=0x820-0x823
+	PM2_GPE1_BLK=0x830-0x833, GPE1_BASE=16
+	P_LVL2_LAT=99ms, P_LVL3_LAT=990ms
+	FLUSH_SIZE=1024, FLUSH_STRIDE=16
+	DUTY_OFFSET=1, DUTY_WIDTH=3
+	DAY_ALRM=13, MON_ALRM=0, CENTURY=0
+	Flags={WBINVD,PROC_C1,SLP_BUTTON,RTC_S4}
+ */
+/*
+DSDT: Length=29816, Revision=1, Checksum=249,
+	OEMID=1ABZX, OEM Table ID=1ABZX001, OEM Revision=0x1,
+	Creator ID=INTL, Creator Revision=0x2002026
+ */
+DefinitionBlock (
+"acpi_dsdt.aml",	//Output filename
+"DSDT",			//Signature
+0x1,			//DSDT Revision
+"1ABZX",			//OEMID
+"1ABZX001",		//TABLE ID
+0x1			//OEM Revision
+)
+
+{
+Scope(\_SB_) {
+    Name(ATKP, Zero)
+    Device(ATKD) {
+        Name(_HID, "ATK0100")
+        Name(_UID, 0x01010100)
+        Method(INIT, 1) {
+            Store(One, ATKP)
+            Return(\MNAM)
+        }
+        Method(BSTS) {
+            Store(\IKFG, Local0)
+            If(\ACPF) {
+                And(Local0, 0x7f, Local0)
+            }
+            Return(Local0)
+        }
+        Method(MLED, 1) {
+            OMLD(Arg0)
+        }
+        Method(TMPR, 0, Serialized) {
+            Store(\_TZ_.GTMP(), Local0)
+            Store(\_TZ_.RFAN(), Local1)
+            If(LNot(LLess(Local1, 0x32))) {
+                Store(0x32, Local1)
+            }
+            Store(RWRD(0x5d, 0x30), Local4)
+            And(Local4, 0xff, Local4)
+            If(LEqual(Local4, 0x73)) {
+                Store(0x1c, Local1)
+            }
+            ShiftLeft(Local1, 0x10, Local1)
+            Add(\_TZ_.KELV(Local0), Local1, Local0)
+            Store(Zero, Local2)
+            If(\TENA) {
+                Store(\TDTY, Local2)
+            }
+            Else {
+                Store(HKTH(), Local3)
+                If(LNot(LEqual(Local3, 0xffff))) {
+                    Store(Local3, Local2)
+                }
+            }
+            ShiftLeft(Local2, 0x18, Local2)
+            Add(Local0, Local2, Local0)
+            Return(Local0)
+        }
+        Method(SFUN) {
+            Store(0x37, Local0)
+            Or(Local0, 0x40, Local0)
+            Or(Local0, 0x80, Local0)
+            Or(Local0, 0x0800, Local0)
+            Or(Local0, 0x00020000, Local0)
+            Return(Local0)
+        }
+        Method(WLED, 1) {
+            Store(Arg0, WLEN)
+            OWLD(Arg0)
+        }
+        Method(BLED, 1) {
+            Store(Arg0, BTEN)
+            OBTD(Arg0)
+        }
+        Method(RSTS) {
+            Store(Zero, Local0)
+            Or(Local0, 0x0300, Local0)
+            If(BTEN) {
+                Or(Local0, 0x2, Local0)
+            }
+            If(WLEN) {
+                Or(Local0, 0x1, Local0)
+            }
+            Return(Local0)
+        }
+        Method(HWRS) {
+            Store(Zero, Local0)
+            If(\_SB_.PCI0.MPCI.MPDP()) {
+                Or(Local0, 0x80, Local0)
+            }
+            If(One) {
+                Or(Local0, 0x0100, Local0)
+            }
+            Return(Local0)
+        }
+        Method(QMOD, 1) {
+            If(LEqual(Arg0, 0x0)) {
+                Return(One)
+            }
+            If(LEqual(Arg0, 0x1)) {
+                FFCT()
+                \_TZ_.TCHG()
+                Return(One)
+            }
+            If(LEqual(Arg0, 0x2)) {
+                AFEN()
+                \_TZ_.TCHG()
+                Return(One)
+            }
+        }
+        Method(WDEV) {
+            Return(\_SB_.PCI0.MPCI.MPDP())
+        }
+        Method(OSVR, 1) {
+            Store(Arg0, \OSFG)
+        }
+        Method(GPLV) {
+            Return(\LBTN)
+        }
+        Method(SPLV, 1) {
+            Store(Arg0, \LBTN)
+            \_SB_.PCI0.SBRG.EC0_.STBR()
+        }
+        Method(SDSP, 1) {
+            If(\NATK()) {
+                \SWHG(Arg0)
+            }
+        }
+        Method(GPID) {
+            Return(OPID())
+        }
+        Method(SMBB, 1, Serialized) {
+            ShiftRight(Arg0, 0x10, Local0)
+            And(Local0, 0xff, Local0)
+            ShiftRight(Arg0, 0x18, Local1)
+            And(Arg0, 0xff, Local2)
+            If(And(Local1, 0x1)) {
+                Return(\RBYT(Local1, Local0))
+            }
+            Else {
+                Return(\WBYT(Local1, Local0, Local2))
+            }
+        }
+        Method(SMBW, 1, Serialized) {
+            ShiftRight(Arg0, 0x10, Local0)
+            And(Local0, 0xff, Local0)
+            ShiftRight(Arg0, 0x18, Local1)
+            And(Arg0, 0xff, Local2)
+            If(And(Local1, 0x1)) {
+                Return(\RWRD(Local1, Local0))
+            }
+            Else {
+                Return(\WWRD(Local1, Local0, Local2))
+            }
+        }
+        Method(SMBK, 1, Serialized) {
+            ShiftRight(Arg0, 0x8, Local0)
+            And(Local0, 0xff, Local0)
+            If(Local0) {
+                ShiftRight(Arg0, 0x10, Local0)
+                And(Local0, 0xff, Local0)
+                ShiftRight(Arg0, 0x18, Local1)
+                And(Local1, 0xff, Local1)
+                And(Arg0, 0xf, Local3)
+                If(And(Local1, 0x1)) {
+                    RBLK(Local1, Local0, Local3)
+                }
+                Else {
+                    WBLK(Local1, Local0, Local3)
+                }
+                Return(0x0)
+            }
+            Else {
+                ShiftRight(Arg0, 0x10, Local2)
+                And(Local2, 0xff, Local2)
+                ShiftRight(Arg0, 0x18, Local1)
+                If(And(Local1, 0x1)) {
+                    Return(DerefOf(Index(RBUF, Local2)))
+                }
+                Else {
+                    And(Arg0, 0xff, Local1)
+                    Store(Local1, Index(RBUF, Local2))
+                    Return(0x0)
+                }
+            }
+        }
+        Method(ECRW, 1, Serialized) {
+            ShiftRight(Arg0, 0x18, Local0)
+            And(Local0, 0xff, Local0)
+            ShiftRight(Arg0, 0x10, Local1)
+            And(Local1, 0xff, Local1)
+            ShiftRight(Arg0, 0x8, Local2)
+            And(Local2, 0xff, Local2)
+            And(Arg0, 0xff, Local3)
+            If(LNot(LEqual(Acquire(\P4SM, 0xffff), 0x0))) {
+                Return(Ones)
+            }
+            Store(Local0, \_SB_.PCI0.SBRG.EC0_.CDT3)
+            Store(Local1, \_SB_.PCI0.SBRG.EC0_.CDT2)
+            Store(Local2, \_SB_.PCI0.SBRG.EC0_.CDT1)
+            Store(Local3, \_SB_.PCI0.SBRG.EC0_.CMD1)
+            Store(0x5, Local0)
+            While(LAnd(Local0, \_SB_.PCI0.SBRG.EC0_.CMD1)) {
+                Sleep(0x1)
+                Decrement(Local0)
+            }
+            Store(\_SB_.PCI0.SBRG.EC0_.CDT3, Local0)
+            Store(\_SB_.PCI0.SBRG.EC0_.CDT2, Local1)
+            Store(\_SB_.PCI0.SBRG.EC0_.CDT1, Local2)
+            Store(\_SB_.PCI0.SBRG.EC0_.CMD1, Local3)
+            Release(\P4SM)
+            ShiftLeft(Local0, 0x8, Local0)
+            Or(Local0, Local1, Local0)
+            ShiftLeft(Local0, 0x8, Local0)
+            Or(Local0, Local2, Local0)
+            ShiftLeft(Local0, 0x8, Local0)
+            Or(Local0, Local3, Local0)
+            Return(Local0)
+        }
+    }
+}
+Name(IRID, 0x10f0a34d)
+Name(SPIO, 0x2e)
+Name(IO1B, 0x0a00)
+Name(IO1L, 0x10)
+Name(APIC, 0x1)
+Name(PMBS, 0x0800)
+Name(PMLN, 0xe0)
+Name(GPBS, 0x0)
+Name(GPLN, 0x0)
+Name(SMBL, 0x20)
+Name(PCIB, 0xe0000000)
+Name(PCIL, 0x10000000)
+Name(APCB, 0xfec00000)
+Name(APCL, 0x00100000)
+Name(SMBS, 0x08e0)
+Name(MBLF, 0xa)
+OperationRegion(BIOS, SystemMemory, 0x3ffde064, 0xff)
+Field(BIOS, ByteAcc, NoLock, Preserve) {
+    SS1_,	1,
+    SS2_,	1,
+    SS3_,	1,
+    SS4_,	1,
+    Offset(0x1),
+    IOST,	16,
+    TOPM,	32,
+    ROMS,	32,
+    MG1B,	32,
+    MG1L,	32,
+    MG2B,	32,
+    MG2L,	32,
+    Offset(0x1c),
+    ASSB,	8,
+    AOTB,	8,
+    AAXB,	32
+}
+Method(RRIO, 4) {
+    Store("RRIO", Debug)
+}
+Method(RDMA, 3) {
+    Store("rDMA", Debug)
+}
+Name(PICM, 0x0)
+Method(_PIC, 1) {
+    If(Arg0) {
+        Store(0xaa, DBG8)
+    }
+    Else {
+        Store(0xac, DBG8)
+    }
+    Store(Arg0, PICM)
+}
+Name(OSVR, Ones)
+Method(OSFL) {
+    If(LNot(LEqual(OSVR, Ones))) {
+        Return(OSVR)
+    }
+    If(LEqual(PICM, 0x0)) {
+        Store(0xac, DBG8)
+    }
+    Store(0x1, OSVR)
+    If(MCTH(\_OS_, "Microsoft Windows NT")) {
+        Store(0x0, OSVR)
+    }
+    Else {
+        If(MCTH(\_OS_, "Microsoft WindowsME: Millennium Edition")) {
+            Store(0x2, OSVR)
+        }
+        If(MCTH(\_OS_, "Linux")) {
+            Store(0x3, OSVR)
+        }
+    }
+    Return(OSVR)
+}
+Method(MCTH, 2) {
+    If(LLess(SizeOf(Arg0), SizeOf(Arg1))) {
+        Return(Zero)
+    }
+    Add(SizeOf(Arg0), 0x1, Local0)
+    Name(BUF0, Buffer(Local0) { })
+    Name(BUF1, Buffer(Local0) { })
+    Store(Arg0, BUF0)
+    Store(Arg1, BUF1)
+    While(Local0) {
+        Decrement(Local0)
+        If(LNot(LEqual(DerefOf(Index(BUF0, Local0)), DerefOf(Index(BUF1, Local0))))) {
+            Return(Zero)
+        }
+    }
+    Return(One)
+}
+Name(PRWP, Package(0x2) {
+    Zero,
+    Zero,
+})
+Method(GPRW, 2) {
+    Store(Arg0, Index(PRWP, 0x0))
+    Store(ShiftLeft(SS1_, 0x1), Local0)
+    Or(Local0, ShiftLeft(SS2_, 0x2), Local0)
+    Or(Local0, ShiftLeft(SS3_, 0x3), Local0)
+    Or(Local0, ShiftLeft(SS4_, 0x4), Local0)
+    If(And(ShiftLeft(0x1, Arg1), Local0)) {
+        Store(Arg1, Index(PRWP, 0x1))
+    }
+    Else {
+        ShiftRight(Local0, 0x1, Local0)
+        If(LOr(LEqual(OSFL(), 0x1), LEqual(OSFL(), 0x2))) {
+            FindSetLeftBit(Local0, Index(PRWP, 0x1))
+        }
+        Else {
+            FindSetRightBit(Local0, Index(PRWP, 0x1))
+        }
+    }
+    Return(PRWP)
+}
+Name(WAKP, Package(0x2) {
+    Zero,
+    Zero,
+})
+OperationRegion(DEB0, SystemIO, 0x80, 0x1)
+Field(DEB0, ByteAcc, NoLock, Preserve) {
+    DBG8,	8
+}
+OperationRegion(DEB1, SystemIO, 0x90, 0x2)
+Field(DEB1, WordAcc, NoLock, Preserve) {
+    DBG9,	16
+}
+Scope(\_SB_) {
+    Name(PR00, Package(0x16) {
+        Package(0x4) {
+            0x0001ffff,
+            0x0,
+            LNKA,
+            0x0,
+        },
+        Package(0x4) {
+            0x0001ffff,
+            0x1,
+            LNKB,
+            0x0,
+        },
+        Package(0x4) {
+            0x0001ffff,
+            0x2,
+            LNKC,
+            0x0,
+        },
+        Package(0x4) {
+            0x0001ffff,
+            0x3,
+            LNKD,
+            0x0,
+        },
+        Package(0x4) {
+            0x0002ffff,
+            0x0,
+            LNKA,
+            0x0,
+        },
+        Package(0x4) {
+            0x0002ffff,
+            0x1,
+            LNKB,
+            0x0,
+        },
+        Package(0x4) {
+            0x0002ffff,
+            0x2,
+            LNKC,
+            0x0,
+        },
+        Package(0x4) {
+            0x0002ffff,
+            0x3,
+            LNKD,
+            0x0,
+        },
+        Package(0x4) {
+            0x0008ffff,
+            0x0,
+            LNKC,
+            0x0,
+        },
+        Package(0x4) {
+            0x0008ffff,
+            0x1,
+            LNKD,
+            0x0,
+        },
+        Package(0x4) {
+            0x0008ffff,
+            0x2,
+            LNKA,
+            0x0,
+        },
+        Package(0x4) {
+            0x0008ffff,
+            0x3,
+            LNKB,
+            0x0,
+        },
+        Package(0x4) {
+            0x000bffff,
+            0x0,
+            LNKD,
+            0x0,
+        },
+        Package(0x4) {
+            0x000affff,
+            0x0,
+            LNKB,
+            0x0,
+        },
+        Package(0x4) {
+            0x000affff,
+            0x1,
+            LNKC,
+            0x0,
+        },
+        Package(0x4) {
+            0x000affff,
+            0x2,
+            LNKD,
+            0x0,
+        },
+        Package(0x4) {
+            0x0009ffff,
+            0x0,
+            LNKC,
+            0x0,
+        },
+        Package(0x4) {
+            0x0009ffff,
+            0x1,
+            LNKD,
+            0x0,
+        },
+        Package(0x4) {
+            0x0003ffff,
+            0x3,
+            LNKH,
+            0x0,
+        },
+        Package(0x4) {
+            0x0003ffff,
+            0x0,
+            LNKE,
+            0x0,
+        },
+        Package(0x4) {
+            0x0003ffff,
+            0x1,
+            LNKF,
+            0x0,
+        },
+        Package(0x4) {
+            0x0003ffff,
+            0x2,
+            LNKG,
+            0x0,
+        },
+    })
+    Name(AR00, Package(0x16) {
+        Package(0x4) {
+            0x0001ffff,
+            0x0,
+            0x0,
+            0x10,
+        },
+        Package(0x4) {
+            0x0001ffff,
+            0x1,
+            0x0,
+            0x11,
+        },
+        Package(0x4) {
+            0x0001ffff,
+            0x2,
+            0x0,
+            0x12,
+        },
+        Package(0x4) {
+            0x0001ffff,
+            0x3,
+            0x0,
+            0x13,
+        },
+        Package(0x4) {
+            0x0002ffff,
+            0x0,
+            0x0,
+            0x10,
+        },
+        Package(0x4) {
+            0x0002ffff,
+            0x1,
+            0x0,
+            0x11,
+        },
+        Package(0x4) {
+            0x0002ffff,
+            0x2,
+            0x0,
+            0x12,
+        },
+        Package(0x4) {
+            0x0002ffff,
+            0x3,
+            0x0,
+            0x13,
+        },
+        Package(0x4) {
+            0x0008ffff,
+            0x0,
+            0x0,
+            0x12,
+        },
+        Package(0x4) {
+            0x0008ffff,
+            0x1,
+            0x0,
+            0x13,
+        },
+        Package(0x4) {
+            0x0008ffff,
+            0x2,
+            0x0,
+            0x10,
+        },
+        Package(0x4) {
+            0x0008ffff,
+            0x3,
+            0x0,
+            0x11,
+        },
+        Package(0x4) {
+            0x000bffff,
+            0x0,
+            0x0,
+            0x13,
+        },
+        Package(0x4) {
+            0x000affff,
+            0x0,
+            0x0,
+            0x11,
+        },
+        Package(0x4) {
+            0x000affff,
+            0x1,
+            0x0,
+            0x12,
+        },
+        Package(0x4) {
+            0x000affff,
+            0x2,
+            0x0,
+            0x13,
+        },
+        Package(0x4) {
+            0x0009ffff,
+            0x0,
+            0x0,
+            0x12,
+        },
+        Package(0x4) {
+            0x0009ffff,
+            0x1,
+            0x0,
+            0x13,
+        },
+        Package(0x4) {
+            0x0003ffff,
+            0x3,
+            0x0,
+            0x17,
+        },
+        Package(0x4) {
+            0x0003ffff,
+            0x0,
+            0x0,
+            0x14,
+        },
+        Package(0x4) {
+            0x0003ffff,
+            0x1,
+            0x0,
+            0x15,
+        },
+        Package(0x4) {
+            0x0003ffff,
+            0x2,
+            0x0,
+            0x16,
+        },
+    })
+    Name(PR01, Package(0x1) {
+        Package(0x4) {
+            0xffff,
+            0x0,
+            LNKA,
+            0x0,
+        },
+    })
+    Name(AR01, Package(0x1) {
+        Package(0x4) {
+            0xffff,
+            0x0,
+            0x0,
+            0x10,
+        },
+    })
+    Name(PRSA, Buffer(0x6) {0x23, 0xb8, 0xdc, 0x18, 0x79, 0x0 })
+    Alias(PRSA, PRSB)
+    Alias(PRSA, PRSC)
+    Alias(PRSA, PRSD)
+    Alias(PRSA, PRSE)
+    Alias(PRSA, PRSF)
+    Alias(PRSA, PRSG)
+    Alias(PRSA, PRSH)
+    Device(PCI0) {
+        Name(_HID, 0x030ad041)
+        Name(_ADR, 0x00180000)
+        Method(^BN00) {
+            Return(0x0)
+        }
+        Method(_BBN) {
+            Return(BN00())
+        }
+        Name(_UID, 0x0)
+        Method(_PRT) {
+            If(PICM) {
+                Return(AR00)
+            }
+            Return(PR00)
+        }
+        Method(NPTS, 1) {
+        }
+        Method(NWAK, 1) {
+        }
+        Device(P0P1) {
+            Name(_ADR, 0x00010000)
+            Method(_PRT) {
+                If(PICM) {
+                    Return(AR01)
+                }
+                Return(PR01)
+            }
+            Device(VGA_) {
+                Name(_ADR, 0x0)
+                OperationRegion(VSID, PCI_Config, 0x0, 0x4)
+                Field(VSID, ByteAcc, NoLock, Preserve) {
+                    REG0,	32
+                }
+                Method(PRST) {
+                    If(LEqual(REG0, 0xffffffff)) {
+                        Return(Zero)
+                    }
+                    Else {
+                        Return(One)
+                    }
+                }
+                Name(UPDN, One)
+                Name(NXTD, 0x1)
+                Name(LCDM, 0x1)
+                Name(CRTM, 0x2)
+                Name(TVOM, 0x4)
+                Name(DONE, Zero)
+                Name(DOSF, One)
+                Method(_INI) {
+                    GETD()
+                }
+                Method(_DOS, 1) {
+                    Store(Arg0, DOSF)
+                }
+                Method(_DOD) {
+                    Return(Package(0x3) {
+                        0x00010100,
+                        0x00010110,
+                        0x0200,
+                    })
+                }
+                Device(CRTD) {
+                    Name(_ADR, 0x0100)
+                    Method(_DCS) {
+                        Store(\AVLD, Local0)
+                        If(Local0) {
+                            If(And(Local0, CRTM)) {
+                                Return(0x1f)
+                            }
+                        }
+                        Return(0x1d)
+                    }
+                    Method(_DGS) {
+                        And(NXTD, CRTM, Local0)
+                        If(Local0) {
+                            Return(0x1)
+                        }
+                        Return(0x0)
+                    }
+                    Method(_DSS, 1) {
+                        If(And(Arg0, 0x40000000)) {
+                            If(And(Arg0, 0x80000000)) {
+                                Store(One, DONE)
+                            }
+                        }
+                    }
+                }
+                Device(TVOD) {
+                    Name(_ADR, 0x0200)
+                    Method(_DCS) {
+                        Store(\AVLD, Local0)
+                        If(Local0) {
+                            If(And(Local0, TVOM)) {
+                                Return(0x1f)
+                            }
+                        }
+                        Return(0x1d)
+                    }
+                    Method(_DGS) {
+                        And(NXTD, TVOM, Local0)
+                        If(Local0) {
+                            Return(0x1)
+                        }
+                        Return(0x0)
+                    }
+                    Method(_DSS, 1) {
+                        If(And(Arg0, 0x40000000)) {
+                            If(And(Arg0, 0x80000000)) {
+                                Store(One, DONE)
+                            }
+                        }
+                    }
+                }
+                Device(LCDD) {
+                    Name(_ADR, 0x0110)
+                    Method(_DCS) {
+                        Store(\AVLD, Local0)
+                        If(Local0) {
+                            If(And(Local0, LCDM)) {
+                                Return(0x1f)
+                            }
+                        }
+                        Return(0x1d)
+                    }
+                    Method(_DGS) {
+                        And(NXTD, LCDM, Local0)
+                        If(Local0) {
+                            Return(0x1)
+                        }
+                        Return(0x0)
+                    }
+                    Method(_DSS, 1) {
+                        If(And(Arg0, 0x40000000)) {
+                            If(And(Arg0, 0x80000000)) {
+                                Store(One, DONE)
+                            }
+                        }
+                    }
+                }
+                Method(SWHD, 1, Serialized) {
+                    Store(One, UPDN)
+                    If(DOSF) {
+                        Store(Arg0, \SETD)
+                        ISMI(0x94)
+                    }
+                    Else {
+                        Store(Zero, DONE)
+                        Notify(VGA_, 0x80)
+                        Store(0x01f4, Local0)
+                        While(Local0) {
+                            If(DONE) {
+                                Store(Zero, Local0)
+                            }
+                            Else {
+                                Sleep(0xa)
+                                Decrement(Local0)
+                            }
+                        }
+                    }
+                }
+                Method(GETD) {
+                    ISMI(0x95)
+                    Return(\ACTD)
+                }
+                Method(ADVD) {
+                    If(UPDN) {
+                        GETD()
+                        Store(\ACTD, \SETD)
+                        Store(Zero, UPDN)
+                    }
+                    ISMI(0xa0)
+                    Store(\SETD, NXTD)
+                    Return(\SETD)
+                    Return(NXTD)
+                }
+                Method(NATK) {
+                    Return(One)
+                }
+            }
+        }
+        Device(SBRG) {
+            Name(_ADR, 0x00020000)
+            Method(SPTS, 1) {
+                Or(P42_, 0x41, P42_)
+            }
+            Method(SWAK, 1) {
+                If(LEqual(Arg0, 0x1)) {
+                    And(RTCE, RTC1, RTCE)
+                    If(RTCE) {
+                        Store(0xc1, DBG8)
+                    }
+                    Else {
+                    }
+                }
+                If(LEqual(Arg0, 0x3)) {
+                    If(RTC3) {
+                        Store(0xc3, DBG8)
+                    }
+                    Else {
+                    }
+                }
+                Or(P42_, 0x21, P42_)
+                Or(Arg0, 0xa0, Local0)
+                Store(Local0, P48_)
+            }
+            OperationRegion(PR42, SystemIO, 0x0842, 0x1)
+            Field(PR42, ByteAcc, NoLock, Preserve) {
+                P42_,	8
+            }
+            OperationRegion(PR48, SystemIO, 0x0848, 0x1)
+            Field(PR48, ByteAcc, NoLock, Preserve) {
+                P48_,	8
+            }
+            OperationRegion(S1WK, SystemIO, 0x0800, 0x2)
+            Field(S1WK, ByteAcc, NoLock, Preserve) {
+                ,	10,
+                RTC1,	1
+            }
+            OperationRegion(PP49, SystemIO, 0x0849, 0x1)
+            Field(PP49, ByteAcc, NoLock, Preserve) {
+                Offset(0x0),
+                RTCE,	1
+            }
+            OperationRegion(S3WK, SystemIO, 0x0860, 0x2)
+            Field(S3WK, ByteAcc, NoLock, Preserve) {
+                ,	14,
+                RTC3,	1
+            }
+            Device(PIC_) {
+                Name(_HID, 0xd041)
+                Name(_CRS, Buffer(0x15) {0x47, 0x1, 0x20, 0x0, 0x20, 0x0, 0x0, 0x2, 0x47, 0x1, 0xa0, 0x0, 0xa0, 0x0, 0x0, 0x2, 0x22, 0x4, 0x0, 0x79, 0x0 })
+            }
+            Device(DMAD) {
+                Name(_HID, 0x0002d041)
+                Name(_CRS, Buffer(0x35) {0x2a, 0x10, 0x4, 0x47, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10, 0x47, 0x1, 0x81, 0x0, 0x81, 0x0, 0x0, 0x3, 0x47, 0x1, 0x87, 0x0, 0x87, 0x0, 0x0, 0x1, 0x47, 0x1, 0x89, 0x0, 0x89, 0x0, 0x0, 0x3, 0x47, 0x1, 0x8f, 0x0, 0x8f, 0x0, 0x0, 0x1, 0x47, 0x1, 0xc0, 0x0, 0xc0, 0x0, 0x0, 0x20, 0x79, 0x0 })
+            }
+            Device(TMR_) {
+                Name(_HID, 0x0001d041)
+                Name(_CRS, Buffer(0xd) {0x47, 0x1, 0x40, 0x0, 0x40, 0x0, 0x0, 0x4, 0x22, 0x1, 0x0, 0x79, 0x0 })
+            }
+            Device(RTC0) {
+                Name(_HID, 0x000bd041)
+                Name(_CRS, Buffer(0xd) {0x47, 0x1, 0x70, 0x0, 0x70, 0x0, 0x0, 0x2, 0x22, 0x0, 0x1, 0x79, 0x0 })
+            }
+            Device(PS2K) {
+                Name(_HID, 0x0303d041)
+                Name(_CID, 0x0b03d041)
+                Method(_STA) {
+                    ShiftLeft(0x1, 0xa, Local0)
+                    If(And(IOST, Local0)) {
+                        Return(0xf)
+                    }
+                    Return(0x0)
+                }
+                Name(_CRS, Buffer(0x15) {0x47, 0x1, 0x60, 0x0, 0x60, 0x0, 0x0, 0x1, 0x47, 0x1, 0x64, 0x0, 0x64, 0x0, 0x0, 0x1, 0x22, 0x2, 0x0, 0x79, 0x0 })
+            }
+            Device(PS2M) {
+                Method(_HID) {
+                    If(ALPS) {
+                        Return(0x130fd041)
+                    }
+                    Else {
+                        Return(0x040a2e4f)
+                    }
+                }
+                Name(_CID, Package(0x5) {
+                    0x000a2e4f,
+                    0x02002e4f,
+                    0x030fd041,
+                    0x130fd041,
+                    0x120fd041,
+                })
+                Method(_STA) {
+                    ShiftLeft(0x1, 0xc, Local0)
+                    If(And(IOST, Local0)) {
+                        Return(0xf)
+                    }
+                    Return(0x0)
+                }
+                Name(CRS1, Buffer(0x5) {0x22, 0x0, 0x10, 0x79, 0x0 })
+                Name(CRS2, Buffer(0x15) {0x47, 0x1, 0x60, 0x0, 0x60, 0x0, 0x0, 0x1, 0x47, 0x1, 0x64, 0x0, 0x64, 0x0, 0x0, 0x1, 0x22, 0x0, 0x10, 0x79, 0x0 })
+                Method(_CRS) {
+                    ShiftLeft(0x1, 0xa, Local0)
+                    If(And(IOST, Local0)) {
+                        Return(CRS1)
+                    }
+                    Else {
+                        Return(CRS2)
+                    }
+                }
+            }
+            Device(SPKR) {
+                Name(_HID, 0x0008d041)
+                Name(_CRS, Buffer(0xa) {0x47, 0x1, 0x61, 0x0, 0x61, 0x0, 0x0, 0x1, 0x79, 0x0 })
+            }
+            Device(COPR) {
+                Name(_HID, 0x040cd041)
+                Name(_CRS, Buffer(0xd) {0x47, 0x1, 0xf0, 0x0, 0xf0, 0x0, 0x0, 0x10, 0x22, 0x0, 0x20, 0x79, 0x0 })
+            }
+            Device(UAR1) {
+                Name(_UID, 0x1)
+                Name(_HID, 0x0105d041)
+                Method(_STA) {
+                    ENFG()
+                    And(CR02, 0x8, Local0)
+                    Store(CR24, Local1)
+                    EXFG()
+                    If(Local0) {
+                        Return(0xf)
+                    }
+                    Else {
+                        If(Local1) {
+                            Return(0xd)
+                        }
+                        Else {
+                            Return(0x0)
+                        }
+                    }
+                }
+                Method(_DIS) {
+                    ENFG()
+                    And(CR02, 0xf7, CR02)
+                    EXFG()
+                }
+                Method(_CRS) {
+                    ENFG()
+                    ShiftLeft(CR24, 0x2, IO11)
+                    Store(IO11, IO12)
+                    ShiftRight(CR28, 0x4, Local0)
+                    If(Local0) {
+                        ShiftLeft(0x1, Local0, IRQM)
+                    }
+                    Else {
+                        Store(0x0, IRQM)
+                    }
+                    Store(0x0, DMAM)
+                    EXFG()
+                    Return(CRS1)
+                }
+                Method(_SRS, 1) {
+                    CreateWordField(Arg0, 0x2, IO11)
+                    CreateWordField(Arg0, 0x9, IRQM)
+                    ENFG()
+                    ShiftRight(IO11, 0x2, CR24)
+                    If(IRQM) {
+                        FindSetRightBit(IRQM, Local0)
+                        Subtract(Local0, 0x1, Local0)
+                        ShiftLeft(Local0, 0x4, Local0)
+                        And(CR28, 0xf, CR28)
+                        Or(CR28, Local0, CR28)
+                    }
+                    Else {
+                        And(CR28, 0xf, CR28)
+                    }
+                    Or(CR02, 0x8, CR02)
+                    EXFG()
+                }
+                Name(_PRS, Buffer(0x4f) {0x31, 0x0, 0x47, 0x1, 0xf8, 0x3, 0xf8, 0x3, 0x1, 0x8, 0x22, 0x10, 0x0, 0x2a, 0x0, 0x0, 0x30, 0x47, 0x1, 0xf8, 0x3, 0xf8, 0x3, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0x0, 0x0, 0x30, 0x47, 0x1, 0xf8, 0x2, 0xf8, 0x2, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0x0, 0x0, 0x30, 0x47, 0x1, 0xe8, 0x3, 0xe8, 0x3, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0x0, 0x0, 0x30, 0x47, 0x1, 0xe8, 0x2, 0xe8, 0x2, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0x0, 0x0, 0x38, 0x79, 0x0 })
+            }
+            Device(UAR2) {
+                Name(_UID, 0x2)
+                Method(_HID) {
+                    ENFG()
+                    And(CR0C, 0x18, Local0)
+                    Store(CR2B, Local1)
+                    EXFG()
+                    If(Local0) {
+                        If(Local1) {
+                            Return(0x10f0a34d)
+                        }
+                        Else {
+                            Return(0x1005d041)
+                        }
+                    }
+                    Else {
+                        Return(0x0105d041)
+                    }
+                }
+                Method(_STA) {
+                    ENFG()
+                    And(CR02, 0x80, Local0)
+                    Store(CR25, Local1)
+                    EXFG()
+                    If(Local0) {
+                        Return(0xf)
+                    }
+                    Else {
+                        If(Local1) {
+                            Return(0xd)
+                        }
+                        Else {
+                            Return(0x0)
+                        }
+                    }
+                }
+                Method(_DIS) {
+                    ENFG()
+                    And(CR02, 0x7f, CR02)
+                    EXFG()
+                }
+                Method(_CRS) {
+                    ENFG()
+                    ShiftLeft(CR25, 0x2, IO11)
+                    Store(IO11, IO12)
+                    Store(0x8, LEN1)
+                    ShiftLeft(CR25, 0x2, IO21)
+                    Store(IO21, IO22)
+                    Store(0x8, LEN2)
+                    Add(IO21, 0x0400, IO31)
+                    Store(IO31, IO32)
+                    Store(0x8, LEN3)
+                    And(CR28, 0xf, Local0)
+                    If(Local0) {
+                        ShiftLeft(0x1, Local0, IRQM)
+                        ShiftLeft(0x1, Local0, IRQE)
+                    }
+                    Else {
+                        Store(0x0, IRQM)
+                        Store(0x0, IRQE)
+                    }
+                    And(CR2C, 0xf, Local0)
+                    If(LEqual(Local0, 0xf)) {
+                        Store(0x0, DMAM)
+                        Store(0x0, DMAE)
+                    }
+                    Else {
+                        ShiftLeft(0x1, Local0, DMAM)
+                        ShiftLeft(0x1, Local0, DMAE)
+                    }
+                    Store(CR2B, Local0)
+                    EXFG()
+                    If(Local0) {
+                        Return(CRS2)
+                    }
+                    Else {
+                        Return(CRS1)
+                    }
+                }
+                Method(_SRS, 1) {
+                    CreateWordField(Arg0, 0x2, IO11)
+                    CreateWordField(Arg0, 0x9, IRQM)
+                    CreateWordField(Arg0, 0x2, IO21)
+                    CreateWordField(Arg0, 0xa, IO31)
+                    CreateWordField(Arg0, 0x11, IRQF)
+                    CreateByteField(Arg0, 0x14, DMAF)
+                    ENFG()
+                    Store(CR2B, Local1)
+                    If(Local1) {
+                        ShiftRight(IO21, 0x2, CR25)
+                        If(IO31) {
+                            ShiftRight(IO31, 0x3, CR2B)
+                        }
+                    }
+                    Else {
+                        ShiftRight(IO11, 0x2, CR25)
+                    }
+                    If(Local1) {
+                        If(IRQF) {
+                            FindSetRightBit(IRQF, Local0)
+                            Subtract(Local0, 0x1, Local0)
+                            And(CR28, 0xf0, CR28)
+                            Or(CR28, Local0, CR28)
+                        }
+                        Else {
+                            And(CR28, 0xf0, CR28)
+                        }
+                    }
+                    Else {
+                        If(IRQM) {
+                            FindSetRightBit(IRQM, Local0)
+                            Subtract(Local0, 0x1, Local0)
+                            And(CR28, 0xf0, CR28)
+                            Or(CR28, Local0, CR28)
+                        }
+                        Else {
+                            And(CR28, 0xf0, CR28)
+                        }
+                    }
+                    If(Local1) {
+                        If(DMAF) {
+                            FindSetRightBit(DMAF, Local0)
+                            Subtract(Local0, 0x1, Local0)
+                            And(CR2C, 0xf0, CR2C)
+                            Or(CR2C, Local0, CR2C)
+                        }
+                        Else {
+                            Or(CR2C, 0xf, CR2C)
+                        }
+                    }
+                    Or(CR02, 0x80, CR02)
+                    EXFG()
+                }
+                Method(_PRS) {
+                    ENFG()
+                    Store(CR2B, Local0)
+                    EXFG()
+                    If(Local0) {
+                        Return(FPRS)
+                    }
+                    Else {
+                        Return(CPRS)
+                    }
+                }
+                Name(CPRS, Buffer(0x4f) {0x31, 0x0, 0x47, 0x1, 0xf8, 0x2, 0xf8, 0x2, 0x1, 0x8, 0x22, 0x8, 0x0, 0x2a, 0x0, 0x0, 0x30, 0x47, 0x1, 0xf8, 0x3, 0xf8, 0x3, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0x0, 0x0, 0x30, 0x47, 0x1, 0xf8, 0x2, 0xf8, 0x2, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0x0, 0x0, 0x30, 0x47, 0x1, 0xe8, 0x3, 0xe8, 0x3, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0x0, 0x0, 0x30, 0x47, 0x1, 0xe8, 0x2, 0xe8, 0x2, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0x0, 0x0, 0x38, 0x79, 0x0 })
+                Name(FPRS, Buffer(0x77) {0x31, 0x0, 0x47, 0x1, 0xf8, 0x2, 0xf8, 0x2, 0x1, 0x8, 0x47, 0x1, 0xf8, 0x6, 0xf8, 0x6, 0x1, 0x8, 0x22, 0x8, 0x0, 0x2a, 0xe, 0x0, 0x30, 0x47, 0x1, 0xf8, 0x3, 0xf8, 0x3, 0x1, 0x8, 0x47, 0x1, 0xf8, 0x7, 0xf8, 0x7, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0xe, 0x0, 0x30, 0x47, 0x1, 0xf8, 0x2, 0xf8, 0x2, 0x1, 0x8, 0x47, 0x1, 0xf8, 0x6, 0xf8, 0x6, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0xe, 0x0, 0x30, 0x47, 0x1, 0xe8, 0x3, 0xe8, 0x3, 0x1, 0x8, 0x47, 0x1, 0xe8, 0x7, 0xe8, 0x7, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0xe, 0x0, 0x30, 0x47, 0x1, 0xe8, 0x2, 0xe8, 0x2, 0x1, 0x8, 0x47, 0x1, 0xe8, 0x6, 0xe8, 0x6, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0xe, 0x0, 0x38, 0x79, 0x0 })
+            }
+            Device(LPTE) {
+                Method(_HID) {
+                    ENFG()
+                    And(CR04, 0x2, Local0)
+                    EXFG()
+                    If(Local0) {
+                        Return(0x0104d041)
+                    }
+                    Else {
+                        Return(0x0004d041)
+                    }
+                }
+                Method(_STA) {
+                    ENFG()
+                    And(CR01, 0x4, Local0)
+                    Store(CR23, Local1)
+                    EXFG()
+                    If(Local0) {
+                        Return(0xf)
+                    }
+                    Else {
+                        If(Local1) {
+                            Return(0xd)
+                        }
+                        Else {
+                            Return(0x0)
+                        }
+                    }
+                }
+                Method(_DIS) {
+                    If(LNot(LEqual(\DBGG, 0xe9efcdab))) {
+                        ENFG()
+                        And(CR01, 0xfb, CR01)
+                        EXFG()
+                    }
+                }
+                Method(_CRS) {
+                    ENFG()
+                    ShiftLeft(CR23, 0x2, IO11)
+                    Store(IO11, IO12)
+                    And(CR27, 0xf, Local0)
+                    If(Local0) {
+                        ShiftLeft(0x1, Local0, IRQM)
+                    }
+                    Else {
+                        Store(0x0, IRQM)
+                    }
+                    And(CR26, 0xf, Local0)
+                    ShiftRight(CR26, 0x4, Local0)
+                    If(LEqual(Local0, 0xf)) {
+                        Store(0x0, DMAM)
+                    }
+                    Else {
+                        ShiftLeft(0x1, Local0, DMAM)
+                    }
+                    EXFG()
+                    Return(CRS1)
+                }
+                Method(_SRS, 1) {
+                    CreateWordField(Arg0, 0x2, IO11)
+                    CreateWordField(Arg0, 0x9, IRQM)
+                    ENFG()
+                    ShiftRight(IO11, 0x2, CR23)
+                    If(IRQM) {
+                        FindSetRightBit(IRQM, Local0)
+                        Subtract(Local0, 0x1, Local0)
+                        And(CR27, 0xf0, CR27)
+                        Or(CR27, Local0, CR27)
+                    }
+                    Else {
+                        And(CR27, 0xf0, CR27)
+                    }
+                    If(DMAM) {
+                        FindSetRightBit(DMAM, Local0)
+                        Subtract(Local0, 0x1, Local0)
+                        And(CR26, 0xf0, CR26)
+                        Or(CR26, Local0, CR26)
+                    }
+                    Else {
+                        Or(CR26, 0xf, CR26)
+                    }
+                    Or(CR01, 0x4, CR01)
+                    EXFG()
+                }
+                Method(_PRS) {
+                    ENFG()
+                    And(CR04, 0x2, Local0)
+                    EXFG()
+                    If(Local0) {
+                        Return(EPPR)
+                    }
+                    Else {
+                        Return(LPPR)
+                    }
+                }
+                Name(LPPR, Buffer(0x6d) {0x31, 0x0, 0x47, 0x1, 0x78, 0x3, 0x78, 0x3, 0x1, 0x8, 0x22, 0x80, 0x0, 0x2a, 0x0, 0x0, 0x30, 0x47, 0x1, 0x78, 0x3, 0x78, 0x3, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0x0, 0x0, 0x30, 0x47, 0x1, 0x78, 0x2, 0x78, 0x2, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0x0, 0x0, 0x30, 0x47, 0x1, 0xbc, 0x3, 0xbc, 0x3, 0x1, 0x4, 0x22, 0xf8, 0x1c, 0x2a, 0x0, 0x0, 0x30, 0x47, 0x1, 0x78, 0x3, 0x78, 0x3, 0x1, 0x8, 0x22, 0x0, 0x0, 0x2a, 0x0, 0x0, 0x30, 0x47, 0x1, 0x78, 0x2, 0x78, 0x2, 0x1, 0x8, 0x22, 0x0, 0x0, 0x2a, 0x0, 0x0, 0x30, 0x47, 0x1, 0xbc, 0x3, 0xbc, 0x3, 0x1, 0x4, 0x22, 0x0, 0x0, 0x2a, 0x0, 0x0, 0x38, 0x79, 0x0 })
+                Name(EPPR, Buffer(0xa5) {0x31, 0x0, 0x47, 0x1, 0x78, 0x3, 0x78, 0x3, 0x1, 0x8, 0x47, 0x1, 0x78, 0x7, 0x78, 0x7, 0x1, 0x8, 0x22, 0x80, 0x0, 0x2a, 0x8, 0x0, 0x30, 0x47, 0x1, 0x78, 0x3, 0x78, 0x3, 0x1, 0x8, 0x47, 0x1, 0x78, 0x7, 0x78, 0x7, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0xf, 0x0, 0x30, 0x47, 0x1, 0x78, 0x2, 0x78, 0x2, 0x1, 0x8, 0x47, 0x1, 0x78, 0x6, 0x78, 0x6, 0x1, 0x8, 0x22, 0xf8, 0x1c, 0x2a, 0xf, 0x0, 0x30, 0x47, 0x1, 0xbc, 0x3, 0xbc, 0x3, 0x1, 0x4, 0x47, 0x1, 0xbc, 0x7, 0xbc, 0x7, 0x1, 0x4, 0x22, 0xf8, 0x1c, 0x2a, 0xf, 0x0, 0x30, 0x47, 0x1, 0x78, 0x3, 0x78, 0x3, 0x1, 0x8, 0x47, 0x1, 0x78, 0x7, 0x78, 0x7, 0x1, 0x8, 0x22, 0x0, 0x0, 0x2a, 0xf, 0x0, 0x30, 0x47, 0x1, 0x78, 0x2, 0x78, 0x2, 0x1, 0x8, 0x47, 0x1, 0x78, 0x6, 0x78, 0x6, 0x1, 0x8, 0x22, 0x0, 0x0, 0x2a, 0xf, 0x0, 0x30, 0x47, 0x1, 0xbc, 0x3, 0xbc, 0x3, 0x1, 0x4, 0x47, 0x1, 0xbc, 0x7, 0xbc, 0x7, 0x1, 0x4, 0x22, 0x0, 0x0, 0x2a, 0xf, 0x0, 0x38, 0x79, 0x0 })
+            }
+            Device(SIOR) {
+                Name(_HID, 0x020cd041)
+                Method(_UID) {
+                    Return(SPIO)
+                }
+                Name(CRS_, Buffer(0x12) {0x47, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x47, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x79, 0x0 })
+                Method(_CRS) {
+                    If(LAnd(LNot(LEqual(SPIO, 0x03f0)), LGreater(SPIO, 0xf0))) {
+                        CreateWordField(CRS_, 0x2, GP10)
+                        CreateWordField(CRS_, 0x4, GP11)
+                        CreateByteField(CRS_, 0x7, GPL1)
+                        Store(SPIO, GP10)
+                        Store(SPIO, GP11)
+                        Store(0x2, GPL1)
+                    }
+                    If(IO1B) {
+                        CreateWordField(CRS_, 0xa, GP20)
+                        CreateWordField(CRS_, 0xc, GP21)
+                        CreateByteField(CRS_, 0xf, GPL2)
+                        Store(IO1B, GP20)
+                        Store(IO1B, GP21)
+                        Store(IO1L, GPL2)
+                    }
+                    Return(CRS_)
+                }
+            }
+            Mutex(MUT0, 0)
+            Method(ENFG) {
+                Acquire(MUT0, 0xfff)
+                Store(0x55, INDX)
+            }
+            Method(EXFG) {
+                Store(0xaa, INDX)
+                Release(MUT0)
+            }
+            Method(SIOS, 1) {
+                Store("SIOS", Debug)
+            }
+            Method(SIOW, 1) {
+                Store("SIOW", Debug)
+            }
+            Method(SIOH) {
+                Store("SIOH", Debug)
+            }
+            OperationRegion(IOID, SystemIO, SPIO, 0x2)
+            Field(IOID, ByteAcc, NoLock, Preserve) {
+                INDX,	8,
+                DATA,	8
+            }
+            IndexField(INDX, DATA, ByteAcc, NoLock, Preserve) {
+                CR00,	8,
+                CR01,	8,
+                CR02,	8,
+                CR03,	8,
+                CR04,	8,
+                CR05,	8,
+                CR06,	8,
+                CR07,	8,
+                CR08,	8,
+                CR09,	8,
+                CR0A,	8,
+                CR0B,	8,
+                CR0C,	8,
+                CR0D,	8,
+                CR0E,	8,
+                CR0F,	8,
+                CR10,	8,
+                CR11,	8,
+                CR12,	8,
+                CR13,	8,
+                CR14,	8,
+                CR15,	8,
+                CR16,	8,
+                CR17,	8,
+                CR18,	8,
+                CR19,	8,
+                CR1A,	8,
+                CR1B,	8,
+                CR1C,	8,
+                CR1D,	8,
+                CR1E,	8,
+                CR1F,	8,
+                CR20,	8,
+                CR21,	8,
+                CR22,	8,
+                CR23,	8,
+                CR24,	8,
+                CR25,	8,
+                CR26,	8,
+                CR27,	8,
+                CR28,	8,
+                CR29,	8,
+                CR2A,	8,
+                CR2B,	8,
+                CR2C,	8,
+                CR2D,	8,
+                CR2E,	8,
+                CR2F,	8,
+                CR30,	8,
+                CR31,	8,
+                CR32,	8,
+                CR33,	8,
+                CR34,	8,
+                CR35,	8,
+                CR36,	8,
+                CR37,	8,
+                CR38,	8,
+                CR39,	8
+            }
+            Name(CRS1, Buffer(0x10) {0x47, 0x1, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x22, 0x0, 0x0, 0x2a, 0x0, 0x0, 0x79, 0x0 })
+            CreateWordField(CRS1, 0x2, IO11)
+            CreateWordField(CRS1, 0x4, IO12)
+            CreateByteField(CRS1, 0x7, LEN1)
+            CreateWordField(CRS1, 0x9, IRQM)
+            CreateByteField(CRS1, 0xc, DMAM)
+            Name(CRS2, Buffer(0x18) {0x47, 0x1, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x47, 0x1, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x22, 0x40, 0x0, 0x2a, 0x4, 0x0, 0x79, 0x0 })
+            CreateWordField(CRS2, 0x2, IO21)
+            CreateWordField(CRS2, 0x4, IO22)
+            CreateByteField(CRS2, 0x7, LEN2)
+            CreateWordField(CRS2, 0xa, IO31)
+            CreateWordField(CRS2, 0xc, IO32)
+            CreateByteField(CRS2, 0xf, LEN3)
+            CreateWordField(CRS2, 0x11, IRQE)
+            CreateByteField(CRS2, 0x14, DMAE)
+            Device(RMSC) {
+                Name(_HID, 0x020cd041)
+                Name(_UID, 0x10)
+                Name(CRS_, Buffer(0xe2) {0x47, 0x1, 0x10, 0x0, 0x10, 0x0, 0x0, 0x10, 0x47, 0x1, 0x22, 0x0, 0x22, 0x0, 0x0, 0x1e, 0x47, 0x1, 0x44, 0x0, 0x44, 0x0, 0x0, 0x1c, 0x47, 0x1, 0x62, 0x0, 0x62, 0x0, 0x0, 0x2, 0x47, 0x1, 0x65, 0x0, 0x65, 0x0, 0x0, 0xb, 0x47, 0x1, 0x72, 0x0, 0x72, 0x0, 0x0, 0xe, 0x47, 0x1, 0x80, 0x0, 0x80, 0x0, 0x0, 0x1, 0x47, 0x1, 0x84, 0x0, 0x84, 0x0, 0x0, 0x3, 0x47, 0x1, 0x88, 0x0, 0x88, 0x0, 0x0, 0x1, 0x47, 0x1, 0x8c, 0x0, 0x8c, 0x0, 0x0, 0x3, 0x47, 0x1, 0x90, 0x0, 0x90, 0x0, 0x0, 0x10, 0x47, 0x1, 0xa2, 0x0, 0xa2, 0x0, 0x0, 0x1e, 0x47, 0x1, 0xe0, 0x0, 0xe0, 0x0, 0x0, 0x10, 0x47, 0x1, 0x80, 0x4, 0x80, 0x4, 0x0, 0x10, 0x47, 0x1, 0xd0, 0x4, 0xd0, 0x4, 0x0, 0x2, 0x47, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x47, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x47, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x47, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x86, 0x9, 0x0, 0x0, 0x0, 0x0, 0xf8, 0xff, 0x0, 0x0, 0x8, 0x0, 0x85, 0x11, 0x0, 0x0, 0x0, 0x0, 0xe8, 0xff, 0x0, 0x0, 0xe8, 0xff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x8, 0x0, 0x85, 0x11, 0x0, 0x0, 0x0, 0x0, 0xb8, 0xff, 0x0, 0x0, 0xb8, 0xff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x8, 0x0, 0x85, 0x11, 0x0, 0x0, 0x0, 0x0, 0xd0, 0xfe, 0x0, 0x0, 0xd0, 0xfe, 0x0, 0x0, 0x0, 0x0, 0x0, 0x4, 0x0, 0x0, 0x79, 0x0 })
+                Method(_CRS) {
+                    CreateWordField(CRS_, 0x7a, GP00)
+                    CreateWordField(CRS_, 0x7c, GP01)
+                    CreateByteField(CRS_, 0x7f, GP0L)
+                    Store(PMBS, GP00)
+                    Store(PMBS, GP01)
+                    Store(PMLN, GP0L)
+                    If(LNot(LEqual(SMBS, 0x08e0))) {
+                        CreateWordField(CRS_, 0x82, GP30)
+                        CreateWordField(CRS_, 0x84, GP31)
+                        CreateByteField(CRS_, 0x87, GP3L)
+                        Add(0x80, PMBS, Local0)
+                        Store(Local0, GP30)
+                        Store(Local0, GP31)
+                        Store(0x80, GP3L)
+                    }
+                    If(SMBS) {
+                        CreateWordField(CRS_, 0x8a, GP10)
+                        CreateWordField(CRS_, 0x8c, GP11)
+                        CreateByteField(CRS_, 0x8f, GP1L)
+                        Store(SMBS, GP10)
+                        Store(SMBS, GP11)
+                        Store(SMBL, GP1L)
+                    }
+                    If(GPBS) {
+                        CreateWordField(CRS_, 0x92, GP20)
+                        CreateWordField(CRS_, 0x94, GP21)
+                        CreateByteField(CRS_, 0x97, GP2L)
+                        Store(GPBS, GP20)
+                        Store(GPBS, GP21)
+                        Store(GPLN, GP2L)
+                    }
+                    Return(CRS_)
+                }
+            }
+            Scope(\_SB_) {
+                Scope(PCI0) {
+                    Name(_PRW, Package(0x2) {
+                        0xb,
+                        0x4,
+                    })
+                    Method(_S3D) {
+                        If(LOr(LEqual(OSFL(), 0x1), LEqual(OSFL(), 0x2))) {
+                            Return(0x2)
+                        }
+                        Else {
+                            Return(0x3)
+                        }
+                    }
+                    Scope(SBRG) {
+                        Scope(PS2K) {
+                            Method(_PRW) {
+                                Return(GPRW(0xf, 0x4))
+                            }
+                        }
+                        Scope(PS2M) {
+                            Method(_PRW) {
+                                Return(GPRW(0xd, 0x4))
+                            }
+                        }
+                        Scope(UAR1) {
+                            Method(_PRW) {
+                                Return(GPRW(0x8, 0x4))
+                            }
+                        }
+                        Scope(UAR2) {
+                            Method(_PRW) {
+                                Return(GPRW(0x8, 0x4))
+                            }
+                        }
+                        Scope(\_GPE) {
+                            Method(_L0F) {
+                                Notify(\_SB_.PCI0.SBRG.PS2K, 0x2)
+                            }
+                            Method(_L0D) {
+                                Notify(\_SB_.PCI0.SBRG.PS2M, 0x2)
+                            }
+                            Method(_L08) {
+                                Notify(\_SB_.PCI0.SBRG.UAR1, 0x2)
+                                Notify(\_SB_.PCI0.SBRG.UAR2, 0x2)
+                            }
+                        }
+                    }
+                }
+            }
+            Device(\_SB_.PCI0.PCIE) {
+                Name(_HID, 0x020cd041)
+                Name(_UID, 0x11)
+                Name(CRS_, Buffer(0xe) {0x86, 0x9, 0x0, 0x0, 0x0, 0x0, 0x0, 0xe0, 0x0, 0x0, 0x0, 0x10, 0x79, 0x0 })
+                Method(_CRS) {
+                    CreateDWordField(CRS_, 0x4, BAS1)
+                    CreateDWordField(CRS_, 0x8, LEN1)
+                    Store(\PCIB, BAS1)
+                    Store(\PCIL, LEN1)
+                    Return(CRS_)
+                }
+            }
+            Scope(\_PR_) {
+                Processor(CPU1, 1, 0x810, 0x6) {
+                    Name(_PCT, Package(0x2) {
+                        Buffer(0x11) {0x82, 0xc, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x79, 0x0 },
+                        Buffer(0x11) {0x82, 0xc, 0x0, 0x7f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x79, 0x0 },
+                    })
+                    Name(_PSS, Package(0x3) {
+                        Package(0x6) {
+                            0x00000708,
+                            0x00005dc0,
+                            0x00000064,
+                            0x00000007,
+                            0xe0202a8a,
+                            0x0000028a,
+                        },
+                        Package(0x6) {
+                            0x00000640,
+                            0x00004dbc,
+                            0x00000064,
+                            0x00000007,
+                            0xe0202b08,
+                            0x00000308,
+                        },
+                        Package(0x6) {
+                            0x00000320,
+                            0x00001e14,
+                            0x00000064,
+                            0x00000007,
+                            0xe0202d80,
+                            0x00000580,
+                        },
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                        Zero,
+                    })
+                    Method(_PPC) {
+                        Return(0x0)
+                    }
+                }
+            }
+            Device(OMSC) {
+                Name(_HID, 0x020cd041)
+                Name(_UID, 0x0)
+                Name(CRS_, Buffer(0x1a) {0x86, 0x9, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x86, 0x9, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x79, 0x0 })
+                Method(_CRS) {
+                    If(APIC) {
+                        CreateDWordField(CRS_, 0x8, ML01)
+                        CreateDWordField(CRS_, 0x4, MB01)
+                        CreateDWordField(CRS_, 0x14, ML02)
+                        CreateDWordField(CRS_, 0x10, MB02)
+                        Store(0xfec00000, MB01)
+                        Store(0x1000, ML01)
+                        Store(0xfee00000, MB02)
+                        Store(0x1000, ML02)
+                    }
+                    Return(CRS_)
+                }
+            }
+            Device(\_SB_.RMEM) {
+                Name(_HID, 0x010cd041)
+                Name(_UID, 0x1)
+                Name(CRS_, Buffer(0x3e) {0x86, 0x9, 0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xa, 0x0, 0x86, 0x9, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x86, 0x9, 0x0, 0x0, 0x0, 0x0, 0xe, 0x0, 0x0, 0x0, 0x2, 0x0, 0x86, 0x9, 0x0, 0x1, 0x0, 0x0, 0x10, 0x0, 0x0, 0x0, 0x0, 0x0, 0x86, 0x9, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x79, 0x0 })
+                Method(_CRS) {
+                    CreateDWordField(CRS_, 0x10, BAS1)
+                    CreateDWordField(CRS_, 0x14, LEN1)
+                    CreateDWordField(CRS_, 0x1c, BAS2)
+                    CreateDWordField(CRS_, 0x20, LEN2)
+                    CreateDWordField(CRS_, 0x2c, LEN3)
+                    CreateDWordField(CRS_, 0x34, BAS4)
+                    CreateDWordField(CRS_, 0x38, LEN4)
+                    If(OSFL()) {
+                    }
+                    Else {
+                        If(MG1B) {
+                            If(LGreater(MG1B, 0x000c0000)) {
+                                Store(0x000c0000, BAS1)
+                                Subtract(MG1B, BAS1, LEN1)
+                            }
+                        }
+                        Else {
+                            Store(0x000c0000, BAS1)
+                            Store(0x00020000, LEN1)
+                        }
+                        If(Add(MG1B, MG1L, Local0)) {
+                            Store(Local0, BAS2)
+                            Subtract(0x00100000, BAS2, LEN2)
+                        }
+                    }
+                    Subtract(MG2B, 0x00100000, LEN3)
+                    Add(MG2B, MG2L, BAS4)
+                    Subtract(0x0, BAS4, LEN4)
+                    Return(CRS_)
+                }
+            }
+        }
+        Device(IDEC) {
+            Name(_ADR, 0x00020005)
+            Name(IO5T, Package(0x3) {
+                Package(0x7) {
+                    0x78,
+                    0xb4,
+                    0x014a,
+                    0x0186,
+                    0x0258,
+                    0x78,
+                    0x96,
+                },
+                Package(0x7) {
+                    0x6,
+                    0x7,
+                    0x1c,
+                    0x1c,
+                    0x1c,
+                    0x6,
+                    0x7,
+                },
+                Package(0x7) {
+                    0x4,
+                    0x9,
+                    0x3,
+                    0x9,
+                    0x1e,
+                    0x4,
+                    0x6,
+                },
+            })
+            Name(IO6T, Package(0x3) {
+                Package(0x7) {
+                    0x78,
+                    0xb4,
+                    0x014a,
+                    0x0186,
+                    0x0258,
+                    0x78,
+                    0xb4,
+                },
+                Package(0x7) {
+                    0x9,
+                    0xa,
+                    0x26,
+                    0x26,
+                    0x26,
+                    0x9,
+                    0xa,
+                },
+                Package(0x7) {
+                    0x5,
+                    0xc,
+                    0x4,
+                    0xc,
+                    0x28,
+                    0x5,
+                    0xc,
+                },
+            })
+            Name(UM5T, Package(0x6) {
+                0xb,
+                0x7,
+                0x5,
+                0x4,
+                0x2,
+                0x1,
+            })
+            Name(UM6T, Package(0x7) {
+                0xf,
+                0xa,
+                0x7,
+                0x5,
+                0x3,
+                0x2,
+                0x1,
+            })
+            Name(PIO5, Package(0x5) {
+                0x3a,
+                0x25,
+                0x1f,
+                0x10,
+                0xa,
+            })
+            Name(PIO6, Package(0x5) {
+                0x4e,
+                0x32,
+                0x2a,
+                0x16,
+                0xe,
+            })
+            Name(CRCT, Package(0x7) {
+                0x6,
+                0x4,
+                0x3,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+            })
+            Name(INTT, Package(0x5) {
+                0x2,
+                0x2,
+                0x2,
+                0x4,
+                0x6,
+            })
+            Name(DMAT, Package(0x5) {
+                0x0,
+                0x1,
+                0x1,
+                0x1,
+                0x2,
+            })
+            Name(RMFL, 0x1)
+            OperationRegion(CF40, PCI_Config, 0x40, 0x18)
+            Field(CF40, WordAcc, NoLock, Preserve) {
+                ,	1,
+                IOR0,	1,
+                UDM0,	1,
+                UM60,	1,
+                UCT0,	4,
+                CRC0,	4,
+                INI0,	4,
+                ATT0,	6,
+                Offset(0x3),
+                RCT0,	6,
+                Offset(0x4),
+                ,	1,
+                IOR1,	1,
+                UDM1,	1,
+                UM61,	1,
+                UCT1,	4,
+                CRC1,	4,
+                INI1,	4,
+                ATT1,	6,
+                Offset(0x7),
+                RCT1,	6,
+                Offset(0x8),
+                ,	1,
+                IOR2,	1,
+                UDM2,	1,
+                UM62,	1,
+                UCT2,	4,
+                CRC2,	4,
+                INI2,	4,
+                ATT2,	6,
+                Offset(0xb),
+                RCT2,	6,
+                Offset(0xc),
+                ,	1,
+                IOR3,	1,
+                UDM3,	1,
+                UM63,	1,
+                UCT3,	4,
+                CRC3,	4,
+                INI3,	4,
+                ATT3,	6,
+                Offset(0xf),
+                RCT3,	6,
+                Offset(0x10),
+                ,	1,
+                CHE0,	1,
+                Offset(0x12),
+                ,	1,
+                CHE1,	1,
+                Offset(0x14),
+                ,	30,
+                REMP,	1,
+                Offset(0x18)
+            }
+            Name(IDEP, Buffer(0x14) { })
+            CreateDWordField(IDEP, 0x0, GTM0)
+            CreateDWordField(IDEP, 0x4, GTM1)
+            CreateDWordField(IDEP, 0x8, GTM2)
+            CreateDWordField(IDEP, 0xc, GTM3)
+            CreateDWordField(IDEP, 0x10, GTM4)
+            Device(IDE0) {
+                Name(_ADR, 0x0)
+                Method(_GTM) {
+                    Store(0xffffffff, Local0)
+                    Store(0xffffffff, Local1)
+                    Store(0xffffffff, Local2)
+                    Store(0xffffffff, Local3)
+                    Store(0x10, Local4)
+                    Store(REMP, RMFL)
+                    Store(0x0, REMP)
+                    If(CHE0) {
+                        If(LNot(LEqual(ATT0, 0x0))) {
+                            Add(RCT0, 0x1, Local5)
+                            Add(ATT0, 0x1, Local6)
+                            Add(Local5, Local6, Local5)
+                            Multiply(UM60, 0x5, Local6)
+                            Subtract(0x14, Local6, Local7)
+                            Multiply(Local5, Local7, Local0)
+                            ShiftRight(Local0, 0x1, Local0)
+                            If(LNot(LGreater(Local0, 0xb4))) {
+                                Store(Local0, Local1)
+                            }
+                            If(IOR0) {
+                                Or(Local4, 0x2, Local4)
+                            }
+                            If(UDM0) {
+                                Add(UCT0, 0x1, Local5)
+                                Multiply(Local5, Local7, Local6)
+                                ShiftRight(Local6, 0x1, Local1)
+                                Or(Local4, 0x1, Local4)
+                            }
+                        }
+                        If(LNot(LEqual(ATT1, 0x0))) {
+                            Add(RCT1, 0x1, Local5)
+                            Add(ATT1, 0x1, Local6)
+                            Add(Local5, Local6, Local5)
+                            Multiply(UM61, 0x5, Local6)
+                            Subtract(0x14, Local6, Local7)
+                            Multiply(Local5, Local7, Local2)
+                            ShiftRight(Local2, 0x1, Local2)
+                            If(LNot(LGreater(Local2, 0xb4))) {
+                                Store(Local2, Local3)
+                            }
+                            If(IOR1) {
+                                Or(Local4, 0x8, Local4)
+                            }
+                            If(UDM1) {
+                                Add(UCT1, 0x1, Local5)
+                                Multiply(Local5, Local7, Local6)
+                                ShiftRight(Local6, 0x1, Local3)
+                                Or(Local4, 0x4, Local4)
+                            }
+                        }
+                    }
+                    Store(RMFL, REMP)
+                    Store(Local0, GTM0)
+                    Store(Local1, GTM1)
+                    Store(Local2, GTM2)
+                    Store(Local3, GTM3)
+                    Store(Local4, GTM4)
+                    Return(IDEP)
+                }
+                Method(_STM, 3) {
+                    Store(Arg0, IDEP)
+                    Store(GTM0, Local0)
+                    Store(GTM1, Local1)
+                    Store(GTM2, Local2)
+                    Store(GTM3, Local3)
+                    Store(GTM4, Local4)
+                    Store(REMP, RMFL)
+                    Store(0x0, REMP)
+                    If(LAnd(LNot(LEqual(Local1, 0xffffffff)), LNot(LEqual(Local1, 0x0)))) {
+                        If(And(Local4, 0x1)) {
+                            Store(0x1, UDM0)
+                            If(LLess(Local1, 0x14)) {
+                                Store(0x1, UM60)
+                                Store(0x1, UCT0)
+                            }
+                            Else {
+                                Store(0x0, UM60)
+                                Divide(Local1, 0xa, Local6, Local5)
+                                Decrement(Local5)
+                                Store(Local5, UCT0)
+                                Store(Match(UM5T, MEQ, Local5, MTR, 0x0, 0x0), Local5)
+                                Store(DerefOf(Index(CRCT, Local5)), CRC0)
+                            }
+                        }
+                    }
+                    If(LAnd(LNot(LEqual(Local0, 0xffffffff)), LNot(LEqual(Local0, 0x0)))) {
+                        If(UM60) {
+                            Store(Match(DerefOf(Index(IO6T, 0x0)), MEQ, Local0, MTR, 0x0, 0x0), Local6)
+                            Store(DerefOf(Index(DerefOf(Index(IO6T, 0x1)), Local6)), ATT0)
+                            Store(DerefOf(Index(DerefOf(Index(IO6T, 0x2)), Local6)), RCT0)
+                        }
+                        Else {
+                            Store(Match(DerefOf(Index(IO5T, 0x0)), MEQ, Local0, MTR, 0x0, 0x0), Local6)
+                            Store(DerefOf(Index(DerefOf(Index(IO5T, 0x1)), Local6)), ATT0)
+                            Store(DerefOf(Index(DerefOf(Index(IO5T, 0x2)), Local6)), RCT0)
+                            Store(DerefOf(Index(INTT, Local6)), INI0)
+                        }
+                    }
+                    If(LAnd(LNot(LEqual(Local3, 0xffffffff)), LNot(LEqual(Local3, 0x0)))) {
+                        If(And(Local4, 0x4)) {
+                            Store(0x1, UDM1)
+                            If(LLess(Local3, 0x14)) {
+                                Store(0x1, UM61)
+                                Store(0x1, UCT1)
+                            }
+                            Else {
+                                Store(0x0, UM61)
+                                Divide(Local3, 0xa, Local6, Local5)
+                                Decrement(Local5)
+                                Store(Local5, UCT1)
+                                Store(Match(UM5T, MEQ, Local5, MTR, 0x0, 0x0), Local5)
+                                Store(DerefOf(Index(CRCT, Local5)), CRC1)
+                            }
+                        }
+                    }
+                    If(LAnd(LNot(LEqual(Local2, 0xffffffff)), LNot(LEqual(Local2, 0x0)))) {
+                        If(UM61) {
+                            Store(Match(DerefOf(Index(IO6T, 0x0)), MEQ, Local2, MTR, 0x0, 0x0), Local6)
+                            Store(DerefOf(Index(DerefOf(Index(IO6T, 0x1)), Local6)), ATT1)
+                            Store(DerefOf(Index(DerefOf(Index(IO6T, 0x2)), Local6)), RCT1)
+                        }
+                        Else {
+                            Store(Match(DerefOf(Index(IO5T, 0x0)), MEQ, Local2, MTR, 0x0, 0x0), Local6)
+                            Store(DerefOf(Index(DerefOf(Index(IO5T, 0x1)), Local6)), ATT1)
+                            Store(DerefOf(Index(DerefOf(Index(IO5T, 0x2)), Local6)), RCT1)
+                            Store(DerefOf(Index(INTT, Local6)), INI1)
+                        }
+                    }
+                    Store(RMFL, REMP)
+                }
+                Device(DRV0) {
+                    Name(_ADR, 0x0)
+                    Method(_GTF) {
+                        Store(Buffer(0x7) {0x3, 0x0, 0x0, 0x0, 0x0, 0xa0, 0xef }, Local6)
+                        Store(Buffer(0x7) {0x3, 0x0, 0x0, 0x0, 0x0, 0xa0, 0xef }, Local7)
+                        CreateByteField(Local6, 0x1, MODE)
+                        CreateByteField(Local7, 0x1, UMOD)
+                        Store(REMP, RMFL)
+                        Store(0x0, REMP)
+                        If(LNot(LEqual(ATT0, 0x0))) {
+                            Add(ATT0, RCT0, Local5)
+                            If(UM60) {
+                                Store(Match(PIO6, MEQ, Local5, MTR, 0x0, 0x0), MODE)
+                            }
+                            Else {
+                                Store(Match(PIO5, MEQ, Local5, MTR, 0x0, 0x0), MODE)
+                            }
+                            If(UDM0) {
+                                If(UM60) {
+                                    Store(Match(UM6T, MEQ, UCT0, MTR, 0x0, 0x0), UMOD)
+                                }
+                                Else {
+                                    Store(Match(UM5T, MEQ, UCT0, MTR, 0x0, 0x0), UMOD)
+                                }
+                                Or(UMOD, 0x40, UMOD)
+                            }
+                            Else {
+                                Store(DerefOf(Index(DMAT, MODE)), UMOD)
+                                Or(UMOD, 0x20, UMOD)
+                            }
+                            Or(MODE, 0x8, MODE)
+                        }
+                        Store(RMFL, REMP)
+                        Concatenate(Local6, Local7, Local5)
+                        Return(Local5)
+                    }
+                }
+                Device(DRV1) {
+                    Name(_ADR, 0x1)
+                    Method(_GTF) {
+                        Store(Buffer(0x7) {0x3, 0x0, 0x0, 0x0, 0x0, 0xb0, 0xef }, Local6)
+                        Store(Buffer(0x7) {0x3, 0x0, 0x0, 0x0, 0x0, 0xb0, 0xef }, Local7)
+                        CreateByteField(Local6, 0x1, MODE)
+                        CreateByteField(Local7, 0x1, UMOD)
+                        Store(REMP, RMFL)
+                        Store(0x0, REMP)
+                        If(LNot(LEqual(ATT1, 0x0))) {
+                            Add(ATT1, RCT1, Local5)
+                            If(UM61) {
+                                Store(Match(PIO6, MEQ, Local5, MTR, 0x0, 0x0), MODE)
+                            }
+                            Else {
+                                Store(Match(PIO5, MEQ, Local5, MTR, 0x0, 0x0), MODE)
+                            }
+                            If(UDM1) {
+                                If(UM61) {
+                                    Store(Match(UM6T, MEQ, UCT1, MTR, 0x0, 0x0), UMOD)
+                                }
+                                Else {
+                                    Store(Match(UM5T, MEQ, UCT1, MTR, 0x0, 0x0), UMOD)
+                                }
+                                Or(UMOD, 0x40, UMOD)
+                            }
+                            Else {
+                                Store(DerefOf(Index(DMAT, MODE)), UMOD)
+                                Or(UMOD, 0x20, UMOD)
+                            }
+                            Or(MODE, 0x8, MODE)
+                        }
+                        Store(RMFL, REMP)
+                        Concatenate(Local6, Local7, Local5)
+                        Return(Local5)
+                    }
+                }
+            }
+            Device(IDE1) {
+                Name(_ADR, 0x1)
+                Method(_GTM) {
+                    Store(0xffffffff, Local0)
+                    Store(0xffffffff, Local1)
+                    Store(0xffffffff, Local2)
+                    Store(0xffffffff, Local3)
+                    Store(0x10, Local4)
+                    Store(REMP, RMFL)
+                    Store(0x0, REMP)
+                    If(CHE1) {
+                        If(LNot(LEqual(ATT2, 0x0))) {
+                            Add(RCT2, 0x1, Local5)
+                            Add(ATT2, 0x1, Local6)
+                            Add(Local5, Local6, Local5)
+                            Multiply(UM62, 0x5, Local6)
+                            Subtract(0x14, Local6, Local7)
+                            Multiply(Local5, Local7, Local0)
+                            ShiftRight(Local0, 0x1, Local0)
+                            If(LNot(LGreater(Local0, 0xb4))) {
+                                Store(Local0, Local1)
+                            }
+                            If(IOR2) {
+                                Or(Local4, 0x2, Local4)
+                            }
+                            If(UDM2) {
+                                Add(UCT2, 0x1, Local5)
+                                Multiply(Local5, Local7, Local6)
+                                ShiftRight(Local6, 0x1, Local1)
+                                Or(Local4, 0x1, Local4)
+                            }
+                        }
+                        If(LNot(LEqual(ATT3, 0x0))) {
+                            Add(RCT3, 0x1, Local5)
+                            Add(ATT3, 0x1, Local6)
+                            Add(Local5, Local6, Local5)
+                            Multiply(UM63, 0x5, Local6)
+                            Subtract(0x14, Local6, Local7)
+                            Multiply(Local5, Local7, Local2)
+                            ShiftRight(Local2, 0x1, Local2)
+                            If(LNot(LGreater(Local2, 0xb4))) {
+                                Store(Local2, Local3)
+                            }
+                            If(IOR3) {
+                                Or(Local4, 0x8, Local4)
+                            }
+                            If(UDM3) {
+                                Add(UCT3, 0x1, Local5)
+                                Multiply(Local5, Local7, Local6)
+                                ShiftRight(Local6, 0x1, Local3)
+                                Or(Local4, 0x4, Local4)
+                            }
+                        }
+                    }
+                    Store(RMFL, REMP)
+                    Store(Local0, GTM0)
+                    Store(Local1, GTM1)
+                    Store(Local2, GTM2)
+                    Store(Local3, GTM3)
+                    Store(Local4, GTM4)
+                    Return(IDEP)
+                }
+                Method(_STM, 3) {
+                    Store(Arg0, IDEP)
+                    Store(GTM0, Local0)
+                    Store(GTM1, Local1)
+                    Store(GTM2, Local2)
+                    Store(GTM3, Local3)
+                    Store(GTM4, Local4)
+                    Store(REMP, RMFL)
+                    Store(0x0, REMP)
+                    If(LAnd(LNot(LEqual(Local1, 0xffffffff)), LNot(LEqual(Local1, 0x0)))) {
+                        If(And(Local4, 0x1)) {
+                            Store(0x1, UDM2)
+                            If(LLess(Local1, 0x14)) {
+                                Store(0x1, UM62)
+                                Store(0x1, UCT2)
+                            }
+                            Else {
+                                Store(0x0, UM62)
+                                Divide(Local1, 0xa, Local6, Local5)
+                                Decrement(Local5)
+                                Store(Local5, UCT2)
+                                Store(Match(UM5T, MEQ, Local5, MTR, 0x0, 0x0), Local5)
+                                Store(DerefOf(Index(CRCT, Local5)), CRC2)
+                            }
+                        }
+                    }
+                    If(LAnd(LNot(LEqual(Local0, 0xffffffff)), LNot(LEqual(Local0, 0x0)))) {
+                        If(UM62) {
+                            Store(Match(DerefOf(Index(IO6T, 0x0)), MEQ, Local0, MTR, 0x0, 0x0), Local6)
+                            Store(DerefOf(Index(DerefOf(Index(IO6T, 0x1)), Local6)), ATT2)
+                            Store(DerefOf(Index(DerefOf(Index(IO6T, 0x2)), Local6)), RCT2)
+                        }
+                        Else {
+                            Store(Match(DerefOf(Index(IO5T, 0x0)), MEQ, Local0, MTR, 0x0, 0x0), Local6)
+                            Store(DerefOf(Index(DerefOf(Index(IO5T, 0x1)), Local6)), ATT2)
+                            Store(DerefOf(Index(DerefOf(Index(IO5T, 0x2)), Local6)), RCT2)
+                            Store(DerefOf(Index(INTT, Local6)), INI2)
+                        }
+                    }
+                    If(LAnd(LNot(LEqual(Local3, 0xffffffff)), LNot(LEqual(Local3, 0x0)))) {
+                        If(And(Local4, 0x4)) {
+                            Store(0x1, UDM3)
+                            If(LLess(Local3, 0x14)) {
+                                Store(0x1, UM63)
+                                Store(0x1, UCT3)
+                            }
+                            Else {
+                                Store(0x0, UM63)
+                                Divide(Local3, 0xa, Local6, Local5)
+                                Decrement(Local5)
+                                Store(Local5, UCT3)
+                                Store(Match(UM5T, MEQ, Local5, MTR, 0x0, 0x0), Local5)
+                                Store(DerefOf(Index(CRCT, Local5)), CRC3)
+                            }
+                        }
+                    }
+                    If(LAnd(LNot(LEqual(Local2, 0xffffffff)), LNot(LEqual(Local2, 0x0)))) {
+                        If(UM63) {
+                            Store(Match(DerefOf(Index(IO6T, 0x0)), MEQ, Local2, MTR, 0x0, 0x0), Local6)
+                            Store(DerefOf(Index(DerefOf(Index(IO6T, 0x1)), Local6)), ATT3)
+                            Store(DerefOf(Index(DerefOf(Index(IO6T, 0x2)), Local6)), RCT3)
+                        }
+                        Else {
+                            Store(Match(DerefOf(Index(IO5T, 0x0)), MEQ, Local2, MTR, 0x0, 0x0), Local6)
+                            Store(DerefOf(Index(DerefOf(Index(IO5T, 0x1)), Local6)), ATT3)
+                            Store(DerefOf(Index(DerefOf(Index(IO5T, 0x2)), Local6)), RCT3)
+                            Store(DerefOf(Index(INTT, Local6)), INI3)
+                        }
+                    }
+                    Store(RMFL, REMP)
+                }
+                Device(DRV0) {
+                    Name(_ADR, 0x0)
+                    Method(_GTF) {
+                        Store(Buffer(0x7) {0x3, 0x0, 0x0, 0x0, 0x0, 0xa0, 0xef }, Local6)
+                        Store(Buffer(0x7) {0x3, 0x0, 0x0, 0x0, 0x0, 0xa0, 0xef }, Local7)
+                        CreateByteField(Local6, 0x1, MODE)
+                        CreateByteField(Local7, 0x1, UMOD)
+                        Store(REMP, RMFL)
+                        Store(0x0, REMP)
+                        If(LNot(LEqual(ATT2, 0x0))) {
+                            Add(ATT2, RCT2, Local5)
+                            If(UM62) {
+                                Store(Match(PIO6, MEQ, Local5, MTR, 0x0, 0x0), MODE)
+                            }
+                            Else {
+                                Store(Match(PIO5, MEQ, Local5, MTR, 0x0, 0x0), MODE)
+                            }
+                            If(UDM2) {
+                                If(UM62) {
+                                    Store(Match(UM6T, MEQ, UCT2, MTR, 0x0, 0x0), UMOD)
+                                }
+                                Else {
+                                    Store(Match(UM5T, MEQ, UCT2, MTR, 0x0, 0x0), UMOD)
+                                }
+                                Or(UMOD, 0x40, UMOD)
+                            }
+                            Else {
+                                Store(DerefOf(Index(DMAT, MODE)), UMOD)
+                                Or(UMOD, 0x20, UMOD)
+                            }
+                            Or(MODE, 0x8, MODE)
+                        }
+                        Store(RMFL, REMP)
+                        Concatenate(Local6, Local7, Local5)
+                        Return(Local5)
+                    }
+                }
+                Device(DRV1) {
+                    Name(_ADR, 0x1)
+                    Method(_GTF) {
+                        Store(Buffer(0x7) {0x3, 0x0, 0x0, 0x0, 0x0, 0xb0, 0xef }, Local6)
+                        Store(Buffer(0x7) {0x3, 0x0, 0x0, 0x0, 0x0, 0xb0, 0xef }, Local7)
+                        CreateByteField(Local6, 0x1, MODE)
+                        CreateByteField(Local7, 0x1, UMOD)
+                        Store(REMP, RMFL)
+                        Store(0x0, REMP)
+                        If(LNot(LEqual(ATT3, 0x0))) {
+                            Add(ATT3, RCT3, Local5)
+                            If(UM63) {
+                                Store(Match(PIO6, MEQ, Local5, MTR, 0x0, 0x0), MODE)
+                            }
+                            Else {
+                                Store(Match(PIO5, MEQ, Local5, MTR, 0x0, 0x0), MODE)
+                            }
+                            If(UDM3) {
+                                If(UM63) {
+                                    Store(Match(UM6T, MEQ, UCT3, MTR, 0x0, 0x0), UMOD)
+                                }
+                                Else {
+                                    Store(Match(UM5T, MEQ, UCT3, MTR, 0x0, 0x0), UMOD)
+                                }
+                                Or(UMOD, 0x40, UMOD)
+                            }
+                            Else {
+                                Store(DerefOf(Index(DMAT, MODE)), UMOD)
+                                Or(UMOD, 0x20, UMOD)
+                            }
+                            Or(MODE, 0x8, MODE)
+                        }
+                        Store(RMFL, REMP)
+                        Concatenate(Local6, Local7, Local5)
+                        Return(Local5)
+                    }
+                }
+            }
+        }
+        Device(AC97) {
+            Name(_ADR, 0x00020007)
+            Method(_PRW) {
+                Return(GPRW(0xa, 0x4))
+            }
+        }
+        Device(MC97) {
+            Name(_ADR, 0x00020006)
+            Method(_PRW) {
+                Return(GPRW(0x5, 0x4))
+            }
+        }
+        Device(MAC_) {
+            Name(_ADR, 0x000b0000)
+            Method(_PRW) {
+                Return(GPRW(0xb, 0x4))
+            }
+        }
+        Device(CBS0) {
+            Name(_ADR, 0x000a0000)
+            OperationRegion(CBSP, PCI_Config, 0x0, 0xf0)
+            Field(CBSP, DWordAcc, NoLock, Preserve) {
+                Offset(0x4),
+                CB04,	8,
+                Offset(0x14),
+                CB14,	8,
+                Offset(0x3c),
+                CB3C,	8,
+                Offset(0x3e),
+                CB3E,	8,
+                Offset(0x44),
+                CB44,	32,
+                Offset(0xe0),
+                PME0,	8,
+                PME1,	8
+            }
+            Method(_INI) {
+                Store(Zero, CB44)
+            }
+            Method(CBSW, 1) {
+                If(LEqual(Arg0, 0x3)) {
+                    Store(Zero, CB44)
+                }
+            }
+            Method(CBSR) {
+                And(PME1, 0x80, Local1)
+                If(Local1) {
+                    And(PME0, 0xfc, PME0)
+                    Store(PME1, Local2)
+                    Store(Local2, PME1)
+                }
+                Return(Local1)
+            }
+            Method(_PRW) {
+                Return(GPRW(0xb, 0x3))
+            }
+        }
+        Device(P394) {
+            Name(_ADR, 0x000a0001)
+            Method(_PRW) {
+                Return(GPRW(0xb, 0x3))
+            }
+        }
+        Device(MPCI) {
+            Name(_ADR, 0x00090000)
+            OperationRegion(MINP, PCI_Config, 0x0, 0x68)
+            Field(MINP, ByteAcc, NoLock, Preserve) {
+                VNUM,	32,
+                Offset(0x9),
+                PINF,	8,
+                SBCC,	8,
+                BSCC,	8,
+                Offset(0x2c),
+                SNUM,	32,
+                Offset(0x34)
+            }
+            Method(MPDP) {
+                If(LEqual(SNUM, 0xffffffff)) {
+                    Return(0x0)
+                }
+                If(LNot(LEqual(BSCC, 0x2))) {
+                    Return(0x0)
+                }
+                Return(One)
+            }
+            Method(_PRW) {
+                Return(GPRW(0xb, 0x3))
+            }
+        }
+        Device(EUSB) {
+            Name(_ADR, 0x00030003)
+            OperationRegion(USBW, PCI_Config, 0x0, 0xf0)
+            Field(USBW, DWordAcc, NoLock, Preserve) {
+                Offset(0x44),
+                UB44,	8
+            }
+            Method(USB1) {
+                And(UB44, 0x0, UB44)
+                Or(UB44, 0x54, UB44)
+            }
+            Method(_S3D) {
+                If(LOr(LEqual(OSFL(), 0x1), LEqual(OSFL(), 0x2))) {
+                    Return(0x2)
+                }
+                Else {
+                    Return(0x3)
+                }
+            }
+            Method(_PRW) {
+                Return(GPRW(0x6, 0x3))
+            }
+        }
+        Device(USB_) {
+            Name(_ADR, 0x00030000)
+            OperationRegion(USBW, PCI_Config, 0x0, 0xf0)
+            Field(USBW, DWordAcc, NoLock, Preserve) {
+                Offset(0x44),
+                UB44,	8
+            }
+            Method(USB1) {
+                And(UB44, 0x0, UB44)
+                Or(UB44, 0x54, UB44)
+            }
+            Method(_S3D) {
+                If(LOr(LEqual(OSFL(), 0x1), LEqual(OSFL(), 0x2))) {
+                    Return(0x2)
+                }
+                Else {
+                    Return(0x3)
+                }
+            }
+            Method(_PRW) {
+                Return(GPRW(0xe, 0x3))
+            }
+        }
+        Device(USB2) {
+            Name(_ADR, 0x00030001)
+            OperationRegion(USBW, PCI_Config, 0x0, 0xf0)
+            Field(USBW, DWordAcc, NoLock, Preserve) {
+                Offset(0x44),
+                UB44,	8
+            }
+            Method(USB1) {
+                And(UB44, 0x0, UB44)
+                Or(UB44, 0x54, UB44)
+            }
+            Method(_S3D) {
+                If(LOr(LEqual(OSFL(), 0x1), LEqual(OSFL(), 0x2))) {
+                    Return(0x2)
+                }
+                Else {
+                    Return(0x3)
+                }
+            }
+            Method(_PRW) {
+                Return(GPRW(0x4, 0x3))
+            }
+        }
+        Device(USB3) {
+            Name(_ADR, 0x00030002)
+            OperationRegion(USBW, PCI_Config, 0x0, 0xf0)
+            Field(USBW, DWordAcc, NoLock, Preserve) {
+                Offset(0x44),
+                UB44,	8
+            }
+            Method(USB1) {
+                And(UB44, 0x0, UB44)
+                Or(UB44, 0x54, UB44)
+            }
+            Method(_S3D) {
+                If(LOr(LEqual(OSFL(), 0x1), LEqual(OSFL(), 0x2))) {
+                    Return(0x2)
+                }
+                Else {
+                    Return(0x3)
+                }
+            }
+            Method(_PRW) {
+                Return(GPRW(0x7, 0x3))
+            }
+        }
+    }
+    Scope(\_GPE) {
+        Method(_L0A) {
+            Notify(\_SB_.PCI0.AC97, 0x2)
+            Notify(\_SB_.PWRB, 0x2)
+        }
+        Method(_L05) {
+            Notify(\_SB_.PCI0.MC97, 0x2)
+            Notify(\_SB_.PWRB, 0x2)
+        }
+        Method(_L0B) {
+            Notify(\_SB_.PCI0.MAC_, 0x2)
+            Notify(\_SB_.PCI0.CBS0, 0x2)
+            Notify(\_SB_.PCI0.P394, 0x2)
+            Notify(\_SB_.PCI0.MPCI, 0x2)
+            Notify(\_SB_.PWRB, 0x2)
+        }
+        Method(_L06) {
+            Notify(\_SB_.PCI0.EUSB, 0x2)
+            Notify(\_SB_.PWRB, 0x2)
+        }
+        Method(_L0E) {
+            Notify(\_SB_.PCI0.USB_, 0x2)
+            Notify(\_SB_.PWRB, 0x2)
+        }
+        Method(_L04) {
+            Notify(\_SB_.PCI0.USB2, 0x2)
+            Notify(\_SB_.PWRB, 0x2)
+        }
+        Method(_L07) {
+            Notify(\_SB_.PCI0.USB3, 0x2)
+            Notify(\_SB_.PWRB, 0x2)
+        }
+    }
+    Device(PWRB) {
+        Name(_HID, 0x0c0cd041)
+        Name(_UID, 0xaa)
+        Name(_STA, 0xb)
+    }
+}
+Scope(\_SB_.PCI0.SBRG) {
+    Device(EC0_) {
+        Name(_HID, 0x090cd041)
+        Name(_CRS, Buffer(0x12) {0x47, 0x1, 0x62, 0x0, 0x62, 0x0, 0x0, 0x1, 0x47, 0x1, 0x66, 0x0, 0x66, 0x0, 0x0, 0x1, 0x79, 0x0 })
+        Name(_GPE, 0x19)
+        Mutex(MUEC, 0)
+        Name(ECFL, Zero)
+        Method(ECAV) {
+            If(LNot(LLess(\SLPT, 0x4))) {
+                Return(Zero)
+            }
+            Return(ECFL)
+        }
+        OperationRegion(ECOR, EmbeddedControl, 0x0, 0x80)
+        Field(ECOR, ByteAcc, Lock, Preserve) {
+            Offset(0x4),
+            CMD1,	8,
+            CDT1,	8,
+            CDT2,	8,
+            CDT3,	8,
+            Offset(0x43),
+            P50I,	1,
+            ,	1,
+            ,	1,
+            P43I,	1,
+            P54I,	1,
+            P55I,	1,
+            ,	1,
+            Offset(0x44),
+            P54D,	8,
+            P55D,	8,
+            Offset(0x48),
+            P54S,	8,
+            P55S,	8,
+            P50S,	8,
+            P43S,	8,
+            P54T,	8,
+            P55T,	8,
+            P50T,	8,
+            P43T,	8,
+            P60S,	8,
+            P61S,	8,
+            P62S,	8,
+            P63S,	8,
+            P64S,	8,
+            P65S,	8,
+            P66S,	8,
+            P67S,	8,
+            P60T,	8,
+            P61T,	8,
+            P62T,	8,
+            P63T,	8,
+            P64T,	8,
+            P65T,	8,
+            P66T,	8,
+            P67T,	8,
+            Offset(0x78),
+            P60I,	1,
+            P61I,	1,
+            P62I,	1,
+            P63I,	1,
+            P64I,	1,
+            P65I,	1,
+            P66I,	1,
+            P67I,	1
+        }
+        Name(SMBF, 0x0)
+        OperationRegion(SMBX, EmbeddedControl, 0x18, 0x28)
+        Field(SMBX, ByteAcc, NoLock, Preserve) {
+            PRTC,	8,
+            SSTS,	5,
+            ,	1,
+            ALFG,	1,
+            CDFG,	1,
+            ADDR,	8,
+            CMDB,	8,
+            BDAT,	256,
+            BCNT,	8,
+            ,	1,
+            ALAD,	7,
+            ALD0,	8,
+            ALD1,	8
+        }
+        Field(SMBX, ByteAcc, NoLock, Preserve) {
+            Offset(0x4),
+            DAT0,	8,
+            DAT1,	8
+        }
+        Field(SMBX, ByteAcc, NoLock, Preserve) {
+            Offset(0x4),
+            DT2B,	16
+        }
+        OperationRegion(NSBS, EmbeddedControl, 0x40, 0x4)
+        Field(NSBS, ByteAcc, NoLock, Preserve) {
+            A2AD,	8,
+            A2D0,	8,
+            A2D1,	8,
+            A3AD,	8
+        }
+        Method(_INI) {
+            If(LNot(LGreater(\OSFG, \OSME))) {
+                Store(One, ECFL)
+            }
+        }
+        Method(_REG, 2) {
+            If(LEqual(Arg0, 0x3)) {
+                Store(Arg1, ECFL)
+            }
+        }
+        Method(_Q69) {
+            If(\_SB_.ATKP) {
+                Notify(\_SB_.ATKD, 0x52)
+            }
+        }
+        Method(_Q6A) {
+            If(\_SB_.ATKP) {
+                Notify(\_SB_.ATKD, 0x53)
+            }
+        }
+        Method(_Q6B) {
+            If(\_SB_.ATKP) {
+                Notify(\_SB_.ATKD, 0x54)
+            }
+        }
+        Method(_Q6C) {
+            If(\_SB_.ATKP) {
+                Notify(\_SB_.ATKD, 0x55)
+            }
+        }
+        Method(_Q6D) {
+            If(\_SB_.ATKP) {
+                Notify(\_SB_.ATKD, 0x56)
+            }
+        }
+        Method(_Q0A) {
+            Notify(\_SB_.SLPB, 0x80)
+        }
+        Method(_Q0B) {
+            If(\_SB_.ATKP) {
+                DBGR(0x11, 0x0, 0x0, 0x0)
+                Notify(\_SB_.ATKD, 0x88)
+                DBGR(0x12, 0x0, 0x0, 0x0)
+            }
+        }
+        Method(_Q0E) {
+            If(LGreater(LBTN, 0x0)) {
+                Decrement(LBTN)
+            }
+            If(LGreater(LBTN, 0xf)) {
+                Store(0xf, LBTN)
+            }
+            STBR()
+            If(\_SB_.ATKP) {
+                Notify(\_SB_.ATKD, Add(LBTN, 0x20))
+            }
+            Return(One)
+        }
+        Method(_Q0F) {
+            If(LLess(LBTN, 0xf)) {
+                Increment(LBTN)
+            }
+            Else {
+                Store(0xf, LBTN)
+            }
+            STBR()
+            If(\_SB_.ATKP) {
+                Notify(\_SB_.ATKD, Add(LBTN, 0x10))
+            }
+            Return(One)
+        }
+        Method(_Q10) {
+            Store(0x1, Local0)
+            Store(\RGPL(0x7, 0x1), Local0)
+            XOr(Local0, 0x1, Local0)
+            \SGPL(0x7, 0x1, Local0)
+            If(\_SB_.ATKP) {
+                Subtract(0x34, Local0, Local0)
+                Notify(\_SB_.ATKD, Local0)
+            }
+        }
+        Method(_Q11) {
+            FHKW()
+            Store(\ADVG(), Local0)
+            If(\NATK()) {
+                Add(Local0, 0x60, Local1)
+                If(\_SB_.ATKP) {
+                    Notify(\_SB_.ATKD, Local1)
+                }
+                Else {
+                    \SWHG(Local0)
+                }
+            }
+            Else {
+                \SWHG(Local0)
+            }
+            FHKS()
+        }
+        Name(FHKM, One)
+        Method(FHKW, 0, Serialized) {
+            While(LNot(FHKM)) {
+                Sleep(0xa)
+            }
+            Store(Zero, FHKM)
+        }
+        Method(FHKS, 0, Serialized) {
+            Store(One, FHKM)
+        }
+        Method(_Q13) {
+            If(\_SB_.ATKP) {
+                Notify(\_SB_.ATKD, 0x32)
+            }
+        }
+        Method(_Q14) {
+            If(LLess(\AVOL, 0xf)) {
+                Increment(\AVOL)
+            }
+            If(\_SB_.ATKP) {
+                Notify(\_SB_.ATKD, 0x31)
+            }
+        }
+        Method(_Q15) {
+            If(LGreater(\AVOL, 0x0)) {
+                Decrement(\AVOL)
+            }
+            If(\_SB_.ATKP) {
+                Notify(\_SB_.ATKD, 0x30)
+            }
+        }
+        Method(_Q20) {
+            If(CDFG) {
+                Store(One, SMBF)
+                Store(Zero, CDFG)
+            }
+            If(ALFG) {
+                \_SB_.PCI0.SBRG.EC0_.ALMH(ALAD)
+                Store(Zero, ALFG)
+            }
+        }
+        Method(_Q33) {
+            If(\_SB_.ATKP) {
+                Notify(\_SB_.ATKD, 0x6b)
+            }
+        }
+        Method(_Q30) {
+            If(\_SB_.ATKP) {
+                Notify(\_SB_.ATKD, 0x50)
+            }
+        }
+        Method(_Q31) {
+            If(\_SB_.ATKP) {
+                Notify(\_SB_.ATKD, 0x51)
+            }
+        }
+        Method(_Q32) {
+            If(\_SB_.ATKP) {
+                Notify(\_SB_.ATKD, 0x5c)
+            }
+        }
+        Method(_Q36) {
+            If(\_SB_.ATKP) {
+                Notify(\_SB_.ATKD, 0x4c)
+            }
+        }
+        Name(LEDS, Ones)
+        Method(EC0S, 1) {
+            If(LEqual(Arg0, 0x3)) {
+                SPIN(0x24, 0x1)
+            }
+            If(Arg0) {
+                If(LLess(Arg0, 0x4)) {
+                    Store(RDC3(0x2), Local0)
+                    And(Local0, 0xe0, LEDS)
+                    And(LEDS, 0x80, Local1)
+                    If(LNot(Local1)) {
+                        SPIN(0x27, 0x1)
+                    }
+                    And(LEDS, 0x40, Local1)
+                    If(LNot(Local1)) {
+                        SPIN(0x26, 0x1)
+                    }
+                    And(LEDS, 0x20, Local1)
+                    If(LNot(Local1)) {
+                        SPIN(0x25, 0x1)
+                    }
+                }
+            }
+        }
+        Method(EC0W, 1) {
+            If(LEqual(Arg0, 0x3)) {
+                SPIN(0x24, 0x0)
+            }
+            If(LNot(LGreater(Arg0, 0x4))) {
+                Store(\ACPS(), \ACPF)
+                Store(\DCPS(0x0), \DCPF)
+            }
+            If(Arg0) {
+                If(LLess(Arg0, 0x4)) {
+                    And(LEDS, 0x80, Local1)
+                    If(LNot(Local1)) {
+                        SPIN(0x27, 0x0)
+                    }
+                    And(LEDS, 0x40, Local1)
+                    If(LNot(Local1)) {
+                        SPIN(0x26, 0x0)
+                    }
+                    And(LEDS, 0x20, Local1)
+                    If(LNot(Local1)) {
+                        SPIN(0x25, 0x0)
+                    }
+                }
+            }
+        }
+    }
+}
+Scope(\_SB_) {
+    OperationRegion(\_SB_.PCI0.SBRG.PIX0, PCI_Config, 0x41, 0x4)
+    OperationRegion(\_SB_.PCI0.SBRG.PIX1, PCI_Config, 0x60, 0x4)
+    Field(\_SB_.PCI0.SBRG.PIX0, ByteAcc, NoLock, Preserve) {
+        PIRA,	8,
+        PIRB,	8,
+        PIRC,	8,
+        PIRD,	8
+    }
+    Field(\_SB_.PCI0.SBRG.PIX1, ByteAcc, NoLock, Preserve) {
+        PIRE,	8,
+        PIRF,	8,
+        PIRG,	8,
+        PIRH,	8
+    }
+    Name(BUFA, Buffer(0x6) {0x23, 0x0, 0x80, 0x18, 0x79, 0x0 })
+    Device(LNKA) {
+        Name(_HID, 0x0f0cd041)
+        Name(_UID, 0x1)
+        Method(_STA) {
+            And(PIRA, 0x80, Local0)
+            If(Local0) {
+                Return(0x9)
+            }
+            Else {
+                Return(0xb)
+            }
+        }
+        Method(_PRS) {
+            Return(PRSA)
+        }
+        Method(_DIS) {
+            Or(PIRA, 0x80, PIRA)
+        }
+        Method(_CRS) {
+            CreateWordField(BUFA, 0x1, IRA0)
+            And(PIRA, 0xf, Local0)
+            Store(One, Local1)
+            ShiftLeft(Local1, Local0, IRA0)
+            Return(BUFA)
+        }
+        Method(_SRS, 1) {
+            CreateWordField(Arg0, 0x1, IRA_)
+            FindSetRightBit(IRA_, Local0)
+            Decrement(Local0)
+            Store(Local0, PIRA)
+        }
+    }
+    Device(LNKB) {
+        Name(_HID, 0x0f0cd041)
+        Name(_UID, 0x2)
+        Method(_STA) {
+            And(PIRB, 0x80, Local0)
+            If(Local0) {
+                Return(0x9)
+            }
+            Else {
+                Return(0xb)
+            }
+        }
+        Method(_PRS) {
+            Return(PRSB)
+        }
+        Method(_DIS) {
+            Or(PIRB, 0x80, PIRB)
+        }
+        Method(_CRS) {
+            CreateWordField(BUFA, 0x1, IRA0)
+            And(PIRB, 0xf, Local0)
+            Store(One, Local1)
+            ShiftLeft(Local1, Local0, IRA0)
+            Return(BUFA)
+        }
+        Method(_SRS, 1) {
+            CreateWordField(Arg0, 0x1, IRA_)
+            FindSetRightBit(IRA_, Local0)
+            Decrement(Local0)
+            Store(Local0, PIRB)
+        }
+    }
+    Device(LNKC) {
+        Name(_HID, 0x0f0cd041)
+        Name(_UID, 0x3)
+        Method(_STA) {
+            And(PIRC, 0x80, Local0)
+            If(Local0) {
+                Return(0x9)
+            }
+            Else {
+                Return(0xb)
+            }
+        }
+        Method(_PRS) {
+            Return(PRSC)
+        }
+        Method(_DIS) {
+            Or(PIRC, 0x80, PIRC)
+        }
+        Method(_CRS) {
+            CreateWordField(BUFA, 0x1, IRA0)
+            And(PIRC, 0xf, Local0)
+            Store(One, Local1)
+            ShiftLeft(Local1, Local0, IRA0)
+            Return(BUFA)
+        }
+        Method(_SRS, 1) {
+            CreateWordField(Arg0, 0x1, IRA_)
+            FindSetRightBit(IRA_, Local0)
+            Decrement(Local0)
+            Store(Local0, PIRC)
+        }
+    }
+    Device(LNKD) {
+        Name(_HID, 0x0f0cd041)
+        Name(_UID, 0x4)
+        Method(_STA) {
+            And(PIRD, 0x80, Local0)
+            If(Local0) {
+                Return(0x9)
+            }
+            Else {
+                Return(0xb)
+            }
+        }
+        Method(_PRS) {
+            Return(PRSD)
+        }
+        Method(_DIS) {
+            Or(PIRD, 0x80, PIRD)
+        }
+        Method(_CRS) {
+            CreateWordField(BUFA, 0x1, IRA0)
+            And(PIRD, 0xf, Local0)
+            Store(One, Local1)
+            ShiftLeft(Local1, Local0, IRA0)
+            Return(BUFA)
+        }
+        Method(_SRS, 1) {
+            CreateWordField(Arg0, 0x1, IRA_)
+            FindSetRightBit(IRA_, Local0)
+            Decrement(Local0)
+            Store(Local0, PIRD)
+        }
+    }
+    Device(LNKE) {
+        Name(_HID, 0x0f0cd041)
+        Name(_UID, 0x5)
+        Method(_STA) {
+            And(PIRE, 0x80, Local0)
+            If(Local0) {
+                Return(0x9)
+            }
+            Else {
+                Return(0xb)
+            }
+        }
+        Method(_PRS) {
+            Return(PRSE)
+        }
+        Method(_DIS) {
+            Or(PIRE, 0x80, PIRE)
+        }
+        Method(_CRS) {
+            CreateWordField(BUFA, 0x1, IRA0)
+            And(PIRE, 0xf, Local0)
+            Store(One, Local1)
+            ShiftLeft(Local1, Local0, IRA0)
+            Return(BUFA)
+        }
+        Method(_SRS, 1) {
+            CreateWordField(Arg0, 0x1, IRA_)
+            FindSetRightBit(IRA_, Local0)
+            Decrement(Local0)
+            Store(Local0, PIRE)
+        }
+    }
+    Device(LNKF) {
+        Name(_HID, 0x0f0cd041)
+        Name(_UID, 0x6)
+        Method(_STA) {
+            And(PIRF, 0x80, Local0)
+            If(Local0) {
+                Return(0x9)
+            }
+            Else {
+                Return(0xb)
+            }
+        }
+        Method(_PRS) {
+            Return(PRSF)
+        }
+        Method(_DIS) {
+            Or(PIRF, 0x80, PIRF)
+        }
+        Method(_CRS) {
+            CreateWordField(BUFA, 0x1, IRA0)
+            And(PIRF, 0xf, Local0)
+            Store(One, Local1)
+            ShiftLeft(Local1, Local0, IRA0)
+            Return(BUFA)
+        }
+        Method(_SRS, 1) {
+            CreateWordField(Arg0, 0x1, IRA_)
+            FindSetRightBit(IRA_, Local0)
+            Decrement(Local0)
+            Store(Local0, PIRF)
+        }
+    }
+    Device(LNKG) {
+        Name(_HID, 0x0f0cd041)
+        Name(_UID, 0x7)
+        Method(_STA) {
+            And(PIRG, 0x80, Local0)
+            If(Local0) {
+                Return(0x9)
+            }
+            Else {
+                Return(0xb)
+            }
+        }
+        Method(_PRS) {
+            Return(PRSG)
+        }
+        Method(_DIS) {
+            Or(PIRG, 0x80, PIRG)
+        }
+        Method(_CRS) {
+            CreateWordField(BUFA, 0x1, IRA0)
+            And(PIRG, 0xf, Local0)
+            Store(One, Local1)
+            ShiftLeft(Local1, Local0, IRA0)
+            Return(BUFA)
+        }
+        Method(_SRS, 1) {
+            CreateWordField(Arg0, 0x1, IRA_)
+            FindSetRightBit(IRA_, Local0)
+            Decrement(Local0)
+            Store(Local0, PIRG)
+        }
+    }
+    Device(LNKH) {
+        Name(_HID, 0x0f0cd041)
+        Name(_UID, 0x8)
+        Method(_STA) {
+            And(PIRH, 0x80, Local0)
+            If(Local0) {
+                Return(0x9)
+            }
+            Else {
+                Return(0xb)
+            }
+        }
+        Method(_PRS) {
+            Return(PRSH)
+        }
+        Method(_DIS) {
+            Or(PIRH, 0x80, PIRH)
+        }
+        Method(_CRS) {
+            CreateWordField(BUFA, 0x1, IRA0)
+            And(PIRH, 0xf, Local0)
+            Store(One, Local1)
+            ShiftLeft(Local1, Local0, IRA0)
+            Return(BUFA)
+        }
+        Method(_SRS, 1) {
+            CreateWordField(Arg0, 0x1, IRA_)
+            FindSetRightBit(IRA_, Local0)
+            Decrement(Local0)
+            Store(Local0, PIRH)
+        }
+    }
+}
+Scope(\_SB_) {
+    Name(XCPD, 0x0)
+    Name(XNPT, 0x1)
+    Name(XCAP, 0x2)
+    Name(XDCP, 0x4)
+    Name(XDCT, 0x8)
+    Name(XDST, 0xa)
+    Name(XLCP, 0xc)
+    Name(XLCT, 0x10)
+    Name(XLST, 0x12)
+    Name(XSCP, 0x14)
+    Name(XSCT, 0x18)
+    Name(XSST, 0x1a)
+    Name(XRCT, 0x1c)
+    Mutex(MUTE, 0)
+    Method(RBPE, 1) {
+        Acquire(MUTE, 0x3e8)
+        Add(Arg0, \PCIB, Local0)
+        OperationRegion(PCFG, SystemMemory, Local0, 0x1)
+        Field(PCFG, ByteAcc, NoLock, Preserve) {
+            XCFG,	8
+        }
+        Release(MUTE)
+        Return(XCFG)
+    }
+    Method(RWPE, 1) {
+        Acquire(MUTE, 0x3e8)
+        And(Arg0, 0xfffffffe, Arg0)
+        Add(Arg0, \PCIB, Local0)
+        OperationRegion(PCFG, SystemMemory, Local0, 0x2)
+        Field(PCFG, WordAcc, NoLock, Preserve) {
+            XCFG,	16
+        }
+        Release(MUTE)
+        Return(XCFG)
+    }
+    Method(RDPE, 1) {
+        Acquire(MUTE, 0x3e8)
+        And(Arg0, 0xfffffffc, Arg0)
+        Add(Arg0, \PCIB, Local0)
+        OperationRegion(PCFG, SystemMemory, Local0, 0x4)
+        Field(PCFG, DWordAcc, NoLock, Preserve) {
+            XCFG,	32
+        }
+        Release(MUTE)
+        Return(XCFG)
+    }
+    Method(WBPE, 2) {
+        Acquire(MUTE, 0xfff)
+        Add(Arg0, \PCIB, Local0)
+        OperationRegion(PCFG, SystemMemory, Local0, 0x1)
+        Field(PCFG, ByteAcc, NoLock, Preserve) {
+            XCFG,	8
+        }
+        Store(Arg1, XCFG)
+        Release(MUTE)
+    }
+    Method(WWPE, 2) {
+        Acquire(MUTE, 0x3e8)
+        And(Arg0, 0xfffffffe, Arg0)
+        Add(Arg0, \PCIB, Local0)
+        OperationRegion(PCFG, SystemMemory, Local0, 0x2)
+        Field(PCFG, WordAcc, NoLock, Preserve) {
+            XCFG,	16
+        }
+        Store(Arg1, XCFG)
+        Release(MUTE)
+    }
+    Method(WDPE, 2) {
+        Acquire(MUTE, 0x3e8)
+        And(Arg0, 0xfffffffc, Arg0)
+        Add(Arg0, \PCIB, Local0)
+        OperationRegion(PCFG, SystemMemory, Local0, 0x4)
+        Field(PCFG, DWordAcc, NoLock, Preserve) {
+            XCFG,	32
+        }
+        Store(Arg1, XCFG)
+        Release(MUTE)
+    }
+    Method(RWDP, 3) {
+        Acquire(MUTE, 0x3e8)
+        And(Arg0, 0xfffffffc, Arg0)
+        Add(Arg0, \PCIB, Local0)
+        OperationRegion(PCFG, SystemMemory, Local0, 0x4)
+        Field(PCFG, DWordAcc, NoLock, Preserve) {
+            XCFG,	32
+        }
+        And(XCFG, Arg2, Local1)
+        Or(Local1, Arg1, XCFG)
+        Release(MUTE)
+    }
+    Method(RPME, 1) {
+        Add(Arg0, 0x84, Local0)
+        Store(\_SB_.RDPE(Local0), Local1)
+        If(LEqual(Local1, 0xffffffff)) {
+            Return(0x0)
+        }
+        Else {
+            If(LAnd(Local1, 0x00010000)) {
+                \_SB_.WDPE(Local0, And(Local1, 0x00010000))
+                Return(0x1)
+            }
+            Return(0x0)
+        }
+    }
+}
+Scope(\_SB_.PCI0.SBRG.EC0_) {
+    Method(WCMD, 1, Serialized) {
+        If(ECAV()) {
+            If(LEqual(Acquire(MUEC, 0xffff), 0x0)) {
+                Store(Arg0, CMD1)
+                Release(MUEC)
+            }
+        }
+    }
+    Method(DLY0, 1, Serialized) {
+        If(LNot(ECAV())) {
+            Return(Ones)
+        }
+        Store(Ones, Local0)
+        If(LEqual(Acquire(MUEC, 0xffff), 0x0)) {
+            Store(Arg0, CDT1)
+            Store(0x6b, CDT2)
+            Store(0x0, CDT3)
+            Store(0xbb, CMD1)
+            Store(0x7f, Local1)
+            While(LAnd(Local1, CMD1)) {
+                Sleep(0x1)
+                Decrement(Local1)
+            }
+            If(LEqual(CMD1, Zero)) {
+                Store(CDT1, Local0)
+            }
+            Release(MUEC)
+        }
+        Return(Local0)
+    }
+    Method(RRAM, 2, Serialized) {
+        If(ECAV()) {
+            If(LEqual(Acquire(MUEC, 0xffff), 0x0)) {
+                Store(Arg0, CDT3)
+                Store(Arg1, CDT2)
+                Store(0xba, CMD1)
+                Store(0x7f, Local0)
+                While(LAnd(Local0, CMD1)) {
+                    Sleep(0x1)
+                    Decrement(Local0)
+                }
+                If(LEqual(CMD1, Zero)) {
+                    Store(CDT1, Local0)
+                }
+                Else {
+                    Store(Ones, Local0)
+                }
+                Release(MUEC)
+                Return(Local0)
+            }
+        }
+        Return(Ones)
+    }
+    Method(WRAM, 3, Serialized) {
+        If(ECAV()) {
+            If(LEqual(Acquire(MUEC, 0xffff), 0x0)) {
+                Store(Arg0, CDT3)
+                Store(Arg1, CDT2)
+                Store(Arg2, CDT1)
+                Store(0xbb, CMD1)
+                Store(0x7f, Local0)
+                While(LAnd(Local0, CMD1)) {
+                    Sleep(0x1)
+                    Decrement(Local0)
+                }
+                If(LEqual(CMD1, Zero)) {
+                    Store(One, Local0)
+                }
+                Else {
+                    Store(Ones, Local0)
+                }
+                Release(MUEC)
+                Return(Local0)
+            }
+        }
+        Return(Ones)
+    }
+    Method(STBR, 0, Serialized) {
+        SBDA()
+    }
+    Method(SBDA, 0, Serialized) {
+        If(\ACPF) {
+            Store(DerefOf(Index(PWAC, LBTN)), Local0)
+        }
+        Else {
+            Store(DerefOf(Index(PWDC, LBTN)), Local0)
+        }
+        Add(0x2, 0x83, Local1)
+        SADC(Local0, Local1)
+    }
+    Method(SADC, 2, Serialized) {
+        If(ECAV()) {
+            If(LEqual(Acquire(MUEC, 0xffff), 0x0)) {
+                Store(Arg0, CDT1)
+                Store(Arg1, CDT2)
+                Store(0xc4, CMD1)
+                Store(0x7f, Local0)
+                While(LAnd(Local0, CMD1)) {
+                    Sleep(0x1)
+                    Decrement(Local0)
+                }
+                If(LEqual(CMD1, Zero)) {
+                    Store(CDT1, Local0)
+                }
+                Else {
+                    Store(Ones, Local0)
+                }
+                Release(MUEC)
+                Return(Local0)
+            }
+        }
+        Return(Ones)
+    }
+    Method(SBQH, 3, Serialized) {
+        If(ECAV()) {
+            If(LEqual(Acquire(MUEC, 0xffff), 0x0)) {
+                Store(Arg0, CDT1)
+                Store(Arg1, CDT2)
+                Store(Arg2, CMD1)
+                Store(0x7f, Local0)
+                While(LAnd(Local0, CMD1)) {
+                    Sleep(0x1)
+                    Decrement(Local0)
+                }
+                If(LEqual(CMD1, Zero)) {
+                    Store(CDT1, Local0)
+                }
+                Else {
+                    Store(Ones, Local0)
+                }
+                Release(MUEC)
+                Return(Local0)
+            }
+        }
+        Return(Ones)
+    }
+    Method(STC5, 1, Serialized) {
+        If(ECAV()) {
+            If(LEqual(Acquire(MUEC, 0xffff), 0x0)) {
+                Store(Arg0, CDT1)
+                Store(0xc5, CMD1)
+                Store(0x7f, Local0)
+                While(LAnd(Local0, CMD1)) {
+                    Sleep(0x1)
+                    Decrement(Local0)
+                }
+                If(LEqual(CMD1, Zero)) {
+                    Store(CDT1, Local0)
+                }
+                Else {
+                    Store(Ones, Local0)
+                }
+                Release(MUEC)
+                Return(Local0)
+            }
+        }
+        Return(Ones)
+    }
+    Method(SPIN, 2, Serialized) {
+        ShiftRight(Arg0, 0x4, Local0)
+        And(Arg0, 0xf, Local1)
+        If(LNot(LEqual(Local0, 0x5))) {
+            If(LEqual(Local0, 0x2)) {
+                Add(Local1, 0x8, Local1)
+            }
+            Else {
+                If(LEqual(Local0, 0x4)) {
+                    Add(Local1, 0x10, Local1)
+                }
+                Else {
+                    If(LEqual(Local0, 0x6)) {
+                        Add(Local1, 0x18, Local1)
+                    }
+                    Else {
+                        Return(Ones)
+                    }
+                }
+            }
+        }
+        If(Arg1) {
+            Or(Local1, 0x20, Local1)
+        }
+        Else {
+            Or(Local1, 0x40, Local1)
+        }
+        STC5(Local1)
+        Return(One)
+    }
+    Method(RPIN, 1, Serialized) {
+        ShiftRight(Arg0, 0x4, Local0)
+        And(Local0, 0xf, Local0)
+        And(Arg0, 0xf, Local1)
+        Store(RDC3(Local0), Local2)
+        ShiftRight(Local2, Local1, Local2)
+        And(Local2, 0x1, Local2)
+        Return(Local2)
+    }
+    Method(RDC3, 1, Serialized) {
+        If(ECAV()) {
+            If(LEqual(Acquire(MUEC, 0xffff), 0x0)) {
+                Store(Arg0, CDT1)
+                Store(0xc3, CMD1)
+                Store(0x7f, Local0)
+                While(LAnd(Local0, CMD1)) {
+                    Sleep(0x1)
+                    Decrement(Local0)
+                }
+                If(LEqual(CMD1, Zero)) {
+                    Store(CDT1, Local0)
+                }
+                Else {
+                    Store(Ones, Local0)
+                }
+                Release(MUEC)
+                Return(Local0)
+            }
+        }
+        Return(Ones)
+    }
+    Method(RBAT, 2, Serialized) {
+        If(LNot(ECAV())) {
+            Return(Ones)
+        }
+        If(LEqual(Acquire(MUEC, 0xffff), 0x0)) {
+            Store(0x3, Local0)
+            While(Local0) {
+                Store(Arg0, CDT2)
+                Store(Arg1, Local1)
+                ShiftLeft(Local1, 0x1, Local1)
+                Add(Local1, 0xda, Local1)
+                Store(Local1, CMD1)
+                Store(0x7f, Local1)
+                While(LAnd(CMD1, Local1)) {
+                    Decrement(Local1)
+                    Sleep(0x1)
+                }
+                If(LEqual(CMD1, 0x0)) {
+                    Store(CDT1, Local1)
+                    Store(Zero, Local0)
+                }
+                Else {
+                    Store(Ones, Local1)
+                    Decrement(Local0)
+                }
+            }
+            Release(MUEC)
+            Return(Local1)
+        }
+        Return(Ones)
+    }
+    Method(WBAT, 3, Serialized) {
+        Or(Arg0, 0x80, Local3)
+        If(LNot(ECAV())) {
+            Return(Ones)
+        }
+        If(LEqual(Acquire(MUEC, 0xffff), 0x0)) {
+            Store(0x3, Local0)
+            While(Local0) {
+                Store(Arg2, CDT1)
+                Store(Local3, CDT2)
+                Store(Arg1, Local1)
+                ShiftLeft(Local1, 0x1, Local1)
+                Add(Local1, 0xda, Local1)
+                Store(Local1, CMD1)
+                Store(0x7f, Local1)
+                While(LAnd(CMD1, Local1)) {
+                    Decrement(Local1)
+                    Sleep(0x1)
+                }
+            }
+            Release(MUEC)
+            Return(Local1)
+        }
+        Return(Ones)
+    }
+    Method(FNCT, 2, Serialized) {
+        If(ECAV()) {
+            If(LEqual(Acquire(MUEC, 0xffff), 0x0)) {
+                Store(Arg0, CDT2)
+                Store(Arg1, CDT1)
+                Store(0xc4, CMD1)
+                Store(0x7f, Local0)
+                While(LAnd(Local0, CMD1)) {
+                    Sleep(0x1)
+                    Decrement(Local0)
+                }
+                Release(MUEC)
+            }
+        }
+    }
+    Name(WRQK, 0x2)
+    Name(RDQK, 0x3)
+    Name(SDBT, 0x4)
+    Name(RCBT, 0x5)
+    Name(WRBT, 0x6)
+    Name(RDBT, 0x7)
+    Name(WRWD, 0x8)
+    Name(RDWD, 0x9)
+    Name(WRBL, 0xa)
+    Name(RDBL, 0xb)
+    Name(PCLL, 0xc)
+    Name(GOOD, 0x0)
+    Name(UKER, 0x7)
+    Name(DAER, 0x10)
+    Name(CMDN, 0x12)
+    Name(UKE2, 0x13)
+    Name(DADN, 0x17)
+    Name(SBTO, 0x18)
+    Name(USPT, 0x19)
+    Name(SBBY, 0x1a)
+    Method(SWTC, 2, Serialized) {
+        Store(0x5, Local2)
+        While(Local2) {
+            Store(Arg1, PRTC)
+            And(Arg0, 0xffff, Local1)
+            While(Local1) {
+                If(LEqual(PRTC, 0x0)) {
+                    Store(SSTS, Local0)
+                    Store(Zero, Local1)
+                    If(Local0) {
+                        Decrement(Local2)
+                    }
+                    Else {
+                        Store(Zero, Local2)
+                    }
+                }
+                Else {
+                    Sleep(0x1)
+                    If(LNot(LEqual(Local1, 0xffff))) {
+                        Decrement(Local1)
+                        If(LEqual(Local1, 0x0)) {
+                            Store(Zero, PRTC)
+                            Store(Zero, Local2)
+                            Store(UKER, Local0)
+                        }
+                    }
+                }
+            }
+        }
+        Return(Local0)
+    }
+    Method(SMBR, 3, Serialized) {
+        Store(Package(0x3) {
+            0x7,
+            0x0,
+            0x0,
+        }, Local0)
+        If(LNot(ECAV())) {
+            Return(Local0)
+        }
+        If(LNot(LEqual(Arg0, RDBL))) {
+            If(LNot(LEqual(Arg0, RDWD))) {
+                If(LNot(LEqual(Arg0, RDBT))) {
+                    If(LNot(LEqual(Arg0, RCBT))) {
+                        If(LNot(LEqual(Arg0, RDQK))) {
+                            Return(Local0)
+                        }
+                    }
+                }
+            }
+        }
+        If(LEqual(Acquire(MUEC, 0xffff), 0x0)) {
+            Store(PRTC, Local1)
+            Store(Zero, Local2)
+            While(LNot(LEqual(Local1, 0x0))) {
+                Stall(0xa)
+                Increment(Local2)
+                If(LGreater(Local2, 0x03e8)) {
+                    Store(SBBY, Index(Local0, 0x0))
+                    Store(Zero, Local1)
+                }
+                Else {
+                    Store(PRTC, Local1)
+                }
+            }
+            If(LNot(LGreater(Local2, 0x03e8))) {
+                ShiftLeft(Arg1, 0x1, Local3)
+                Or(Local3, 0x1, Local3)
+                Store(Local3, ADDR)
+                If(LNot(LEqual(Arg0, RDQK))) {
+                    If(LNot(LEqual(Arg0, RCBT))) {
+                        Store(Arg2, CMDB)
+                    }
+                }
+                Store(SWTC(0x07d0, Arg0), Index(Local0, 0x0))
+                If(LEqual(DerefOf(Index(Local0, 0x0)), 0x0)) {
+                    If(LEqual(Arg0, RDBL)) {
+                        Store(BCNT, Index(Local0, 0x1))
+                        Store(BDAT, Index(Local0, 0x2))
+                    }
+                    If(LEqual(Arg0, RDWD)) {
+                        Store(0x2, Index(Local0, 0x1))
+                        Store(DT2B, Index(Local0, 0x2))
+                    }
+                    If(LEqual(Arg0, RDBT)) {
+                        Store(0x1, Index(Local0, 0x1))
+                        Store(DAT0, Index(Local0, 0x2))
+                    }
+                    If(LEqual(Arg0, RCBT)) {
+                        Store(0x1, Index(Local0, 0x1))
+                        Store(DAT0, Index(Local0, 0x2))
+                    }
+                }
+            }
+            Release(MUEC)
+        }
+        Return(Local0)
+    }
+    Method(SMBW, 5, Serialized) {
+        Store(Package(0x1) {
+            0x7,
+        }, Local0)
+        If(LNot(ECAV())) {
+            Return(Local0)
+        }
+        If(LNot(LEqual(Arg0, WRBL))) {
+            If(LNot(LEqual(Arg0, WRWD))) {
+                If(LNot(LEqual(Arg0, WRBT))) {
+                    If(LNot(LEqual(Arg0, SDBT))) {
+                        If(LNot(LEqual(Arg0, WRQK))) {
+                            Return(Local0)
+                        }
+                    }
+                }
+            }
+        }
+        If(LEqual(Acquire(MUEC, 0xffff), 0x0)) {
+            Store(PRTC, Local1)
+            Store(Zero, Local2)
+            While(LNot(LEqual(Local1, 0x0))) {
+                Stall(0xa)
+                Increment(Local2)
+                If(LGreater(Local2, 0x03e8)) {
+                    Store(SBBY, Index(Local0, 0x0))
+                    Store(Zero, Local1)
+                }
+                Else {
+                    Store(PRTC, Local1)
+                }
+            }
+            If(LNot(LGreater(Local2, 0x03e8))) {
+                ShiftLeft(Arg1, 0x1, Local3)
+                Store(Local3, ADDR)
+                If(LNot(LEqual(Arg0, WRQK))) {
+                    If(LNot(LEqual(Arg0, SDBT))) {
+                        Store(Arg2, CMDB)
+                    }
+                }
+                If(LEqual(Arg0, WRBL)) {
+                    Store(Arg3, BCNT)
+                    Store(Arg4, BDAT)
+                }
+                If(LEqual(Arg0, WRWD)) {
+                    Store(Arg4, DT2B)
+                }
+                If(LEqual(Arg0, WRBT)) {
+                    Store(Arg4, DAT0)
+                }
+                If(LEqual(Arg0, SDBT)) {
+                    Store(Arg4, DAT0)
+                }
+                Store(SWTC(0x07d0, Arg0), Index(Local0, 0x0))
+            }
+            Release(MUEC)
+        }
+        Return(Local0)
+    }
+}
+Scope(\_SB_.PCI0.SBRG.EC0_) {
+}
+Scope(\) {
+    OperationRegion(\SIOG, SystemIO, IO1B, IO1L)
+    Field(\SIOG, ByteAcc, NoLock, Preserve) {
+        Offset(0xc),
+        PO10,	8,
+        PO20,	8,
+        PO30,	8,
+        PO40,	8
+    }
+    Method(RIOP, 2, Serialized) {
+        If(LLess(Arg0, 0x20)) {
+            Store(PO10, Local0)
+        }
+        Else {
+            If(LLess(Arg0, 0x30)) {
+                Store(PO20, Local0)
+            }
+            Else {
+                If(LLess(Arg0, 0x40)) {
+                    Store(PO30, Local0)
+                }
+                Else {
+                    Store(PO40, Local0)
+                }
+            }
+        }
+        And(Arg0, 0xf, Local1)
+        ShiftRight(Local0, Local1, Local0)
+        Store(Arg1, Local2)
+        Store(Zero, Local3)
+        While(Local2) {
+            ShiftLeft(Local3, 0x1, Local3)
+            Or(Local3, 0x1, Local3)
+            Decrement(Local2)
+        }
+        And(Local0, Local3, Local0)
+        Return(Local0)
+    }
+    Method(WIOP, 3, Serialized) {
+        If(LLess(Arg0, 0x20)) {
+            Store(PO10, Local0)
+        }
+        Else {
+            If(LLess(Arg0, 0x30)) {
+                Store(PO20, Local0)
+            }
+            Else {
+                If(LLess(Arg0, 0x40)) {
+                    Store(PO30, Local0)
+                }
+                Else {
+                    Store(PO40, Local0)
+                }
+            }
+        }
+        And(Arg0, 0xf, Local1)
+        Store(Arg1, Local2)
+        Store(Zero, Local3)
+        While(Local2) {
+            ShiftLeft(Local3, 0x1, Local3)
+            Or(Local3, 0x1, Local3)
+            Decrement(Local2)
+        }
+        ShiftLeft(Local3, Local1, Local3)
+        Not(Local3, Local3)
+        And(Local0, Local3, Local0)
+        ShiftLeft(Arg2, Local1, Local4)
+        Or(Local0, Local4, Local0)
+        If(LLess(Arg0, 0x20)) {
+            Store(Local0, PO10)
+        }
+        Else {
+            If(LLess(Arg0, 0x30)) {
+                Store(Local0, PO20)
+            }
+            Else {
+                If(LLess(Arg0, 0x40)) {
+                    Store(Local0, PO30)
+                }
+                Else {
+                    Store(Local0, PO40)
+                }
+            }
+        }
+    }
+    OperationRegion(\SIOP, SystemIO, \SPIO, 0x2)
+    Field(\SIOP, ByteAcc, Lock, Preserve) {
+        SIOI,	8,
+        SIOD,	8
+    }
+    IndexField(SIOI, SIOD, ByteAcc, NoLock, Preserve) {
+        Offset(0x7),
+        LDNP,	8,
+        Offset(0x30),
+        LDCP,	8
+    }
+}
+Scope(\) {
+    OperationRegion(\PMIO, SystemIO, PMBS, 0x80)
+    Field(\PMIO, ByteAcc, NoLock, Preserve) {
+        Offset(0x10),
+        ,	1,
+        TDTY,	3,
+        TENA,	1,
+        Offset(0x2a),
+        TTDT,	3,
+        TTEN,	1,
+        Offset(0x30),
+        G00S,	1,
+        G01S,	1,
+        G02S,	1,
+        G03S,	1,
+        G04S,	1,
+        G05S,	1,
+        G06S,	1,
+        G07S,	1,
+        G08S,	1,
+        G09S,	1,
+        G0AS,	1,
+        G0BS,	1,
+        G0CS,	1,
+        G0DS,	1,
+        G0ES,	1,
+        G0FS,	1,
+        G00E,	1,
+        G01E,	1,
+        G02E,	1,
+        G03E,	1,
+        G04E,	1,
+        G05E,	1,
+        G06E,	1,
+        G07E,	1,
+        G08E,	1,
+        G09E,	1,
+        G0AE,	1,
+        G0BE,	1,
+        G0CE,	1,
+        G0DE,	1,
+        G0EE,	1,
+        G0FE,	1,
+        G00R,	2,
+        G01R,	2,
+        G02R,	2,
+        G03R,	2,
+        G04R,	2,
+        G05R,	2,
+        G06R,	2,
+        G07R,	2,
+        G08R,	2,
+        G09R,	2,
+        G0AR,	2,
+        G0BR,	2,
+        G0CR,	2,
+        G0DR,	2,
+        G0ER,	2,
+        G0FR,	2,
+        Offset(0x3e),
+        GP00,	16,
+        ,	6,
+        SLPS,	1,
+        Offset(0x42),
+        ,	6,
+        SLPE,	1,
+        Offset(0x62),
+        S3OF,	1,
+        Offset(0x64),
+        GL00,	18
+    }
+    Method(RGPL, 2, Serialized) {
+        Store(Arg1, Local0)
+        Store(Zero, Local1)
+        While(Local0) {
+            ShiftLeft(Local1, 0x1, Local1)
+            Or(Local1, 0x1, Local1)
+            Decrement(Local0)
+        }
+        ShiftLeft(Local1, Arg0, Local1)
+        Store(GL00, Local0)
+        And(Local0, Local1, Local0)
+        ShiftRight(Local0, Arg0, Local0)
+        Return(Local0)
+    }
+    Method(SGPL, 3, Serialized) {
+        Store(Arg1, Local0)
+        Store(Zero, Local1)
+        Store(Arg2, Local2)
+        While(Local0) {
+            ShiftLeft(Local1, 0x1, Local1)
+            Or(Local1, 0x1, Local1)
+            Decrement(Local0)
+        }
+        ShiftLeft(Local1, Arg0, Local1)
+        Not(Local1, Local1)
+        ShiftLeft(Local2, Arg0, Local2)
+        Store(GL00, Local0)
+        And(Local0, Local1, Local0)
+        Or(Local0, Local2, GL00)
+    }
+    Method(RGPP, 1, Serialized) {
+        ShiftRight(GP00, Arg0, Local0)
+        And(Local0, 0x1, Local0)
+        Return(Local0)
+    }
+    Method(TGPP, 1, Serialized) {
+        ShiftLeft(0x1, Arg0, Local0)
+        XOr(GP00, Local0, GP00)
+    }
+    Method(SGPP, 2, Serialized) {
+        ShiftLeft(0x1, Arg0, Local0)
+        If(Arg1) {
+            Or(GP00, Local0, GP00)
+        }
+        Else {
+            Not(Local0, Local1)
+            And(GP00, Local1, GP00)
+        }
+    }
+    Name(PMEW, Zero)
+    Method(SBRS, 1) {
+    }
+    Method(SBRW, 1) {
+    }
+    Method(STRP, 1) {
+        If(Arg0) {
+            Store(One, \SLPS)
+            Store(One, \SLPE)
+        }
+        Else {
+            Store(One, \SLPS)
+            Store(Zero, \SLPT)
+        }
+    }
+    Method(HKTH, 0, Serialized) {
+        Return(0xffff)
+    }
+}
+Scope(\) {
+    OperationRegion(SMB_, SystemIO, SMBS, SMBL)
+    Field(SMB_, ByteAcc, NoLock, Preserve) {
+        SMB0,	8,
+        SMB1,	8,
+        SMB2,	8,
+        SMB3,	8,
+        SMB4,	8,
+        SMB5,	8,
+        SMB6,	8,
+        SMB7,	8,
+        SMB8,	8,
+        SMB9,	8,
+        SMBA,	8,
+        SMBB,	8,
+        SMBC,	8,
+        SMBD,	8,
+        SMBE,	8,
+        SMBF,	8
+    }
+    Name(RBUF, Package(0x20) {
+    })
+    Method(HBSY) {
+        Store(0xffff, Local0)
+        While(Local0) {
+            And(SMB2, 0x3, Local1)
+            If(LEqual(Local1, 0x0)) {
+                Return(Zero)
+            }
+            Decrement(Local0)
+        }
+        Return(0x1)
+    }
+    Method(WTSB) {
+        Store(0xffff, Local0)
+        While(Local0) {
+            Decrement(Local0)
+            And(SMB0, 0x18, Local1)
+            If(Local1) {
+                Return(0x1)
+            }
+        }
+        Return(0x0)
+    }
+    Mutex(\P4SM, 0)
+    Method(WBYT, 3, Serialized) {
+        If(LNot(LEqual(Acquire(\P4SM, 0xffff), 0x0))) {
+            Return(Ones)
+        }
+        Store(0xff, SMB0)
+        And(SMB2, 0x3, Local0)
+        If(Local0) {
+            Store(0x20, SMB3)
+        }
+        Store(0x5, Local0)
+        While(Local0) {
+            If(HBSY()) {
+                Decrement(Local0)
+            }
+            Else {
+                Store(Arg0, SMB4)
+                Store(Arg1, SMB5)
+                Store(Arg2, SMB8)
+                Store(0x12, SMB3)
+                If(WTSB()) {
+                    Store(0xff, SMB0)
+                    Release(\P4SM)
+                    Return(0x1)
+                }
+                Else {
+                    Decrement(Local0)
+                }
+            }
+        }
+        Store(0xff, SMB0)
+        Release(\P4SM)
+        Return(Ones)
+    }
+    Method(RWRD, 2, Serialized) {
+        If(LNot(LEqual(Acquire(\P4SM, 0xffff), 0x0))) {
+            Return(Ones)
+        }
+        Store(0xff, SMB0)
+        And(SMB2, 0x3, Local0)
+        If(Local0) {
+            Store(0x20, SMB3)
+        }
+        Store(0x5, Local0)
+        While(Local0) {
+            If(HBSY()) {
+                Decrement(Local0)
+            }
+            Else {
+                Or(Arg0, 0x1, SMB4)
+                Store(Arg1, SMB5)
+                Store(0x12, SMB3)
+                If(WTSB()) {
+                    Store(0xff, SMB0)
+                    Store(SMB9, Local1)
+                    ShiftLeft(Local1, 0x8, Local1)
+                    Or(Local1, SMB8, Local1)
+                    Release(\P4SM)
+                    Return(Local1)
+                }
+                Else {
+                    Decrement(Local0)
+                }
+            }
+        }
+        Store(0xff, SMB0)
+        Release(\P4SM)
+        Return(Ones)
+    }
+    Method(WWRD, 3, Serialized) {
+        If(LNot(LEqual(Acquire(\P4SM, 0xffff), 0x0))) {
+            Return(Ones)
+        }
+        Store(0xff, SMB0)
+        And(SMB2, 0x3, Local0)
+        If(Local0) {
+            Store(0x20, SMB3)
+        }
+        Store(0x5, Local0)
+        While(Local0) {
+            If(HBSY()) {
+                Decrement(Local0)
+            }
+            Else {
+                Store(Arg0, SMB4)
+                Store(Arg1, SMB5)
+                And(Arg2, 0xff, Local1)
+                ShiftRight(Arg2, 0x8, Local2)
+                Store(Local1, SMB8)
+                Store(Local2, SMB9)
+                Store(0x13, SMB3)
+                If(WTSB()) {
+                    Store(0xff, SMB0)
+                    Release(\P4SM)
+                    Return(0x1)
+                }
+                Else {
+                    Decrement(Local0)
+                }
+            }
+        }
+        Store(0xff, SMB0)
+        Release(\P4SM)
+        Return(Ones)
+    }
+    Method(RBYT, 2, Serialized) {
+        If(LNot(LEqual(Acquire(\P4SM, 0xffff), 0x0))) {
+            Return(Ones)
+        }
+        Store(0xff, SMB0)
+        And(SMB2, 0x3, Local0)
+        If(Local0) {
+            Store(0x20, SMB3)
+        }
+        Store(0x5, Local0)
+        While(Local0) {
+            If(HBSY()) {
+                Decrement(Local0)
+            }
+            Else {
+                Or(Arg0, 0x1, SMB4)
+                Store(Arg1, SMB5)
+                Store(0x12, SMB3)
+                If(WTSB()) {
+                    Store(0xff, SMB0)
+                    Release(\P4SM)
+                    Return(SMB8)
+                }
+                Else {
+                    Decrement(Local0)
+                }
+            }
+        }
+        Store(0xff, SMB0)
+        Release(\P4SM)
+        Return(Ones)
+    }
+    Method(RBLK, 3, Serialized) {
+        If(LNot(LEqual(Acquire(\P4SM, 0xffff), 0x0))) {
+            Return(Ones)
+        }
+        Store(0xff, SMB0)
+        And(SMB2, 0x3, Local0)
+        If(Local0) {
+            Store(0x20, SMB3)
+        }
+        Store(0x0, Local1)
+        Store(0x5, Local0)
+        While(Local0) {
+            If(HBSY()) {
+                Decrement(Local0)
+            }
+            Else {
+                Or(Arg0, 0x1, SMB4)
+                Store(Arg2, SMB5)
+                Store(0x15, SMB3)
+                While(0x1) {
+                    If(WTSB()) {
+                        Store(SMB8, Index(RBUF, Local1))
+                        Increment(Local1)
+                        Store(SMB9, Index(RBUF, Local1))
+                        Increment(Local1)
+                        Store(SMBA, Index(RBUF, Local1))
+                        Increment(Local1)
+                        Store(SMBB, Index(RBUF, Local1))
+                        Increment(Local1)
+                        Store(SMBC, Index(RBUF, Local1))
+                        Increment(Local1)
+                        Store(SMBD, Index(RBUF, Local1))
+                        Increment(Local1)
+                        Store(SMBE, Index(RBUF, Local1))
+                        Increment(Local1)
+                        Store(SMBF, Index(RBUF, Local1))
+                        Increment(Local1)
+                        If(LGreater(Arg1, 0x8)) {
+                            Subtract(Arg1, 0x8, Arg1)
+                            Store(0x10, SMB0)
+                        }
+                        Else {
+                            Store(0xff, SMB0)
+                            Release(\P4SM)
+                            Return(0x1)
+                        }
+                    }
+                    Else {
+                        Decrement(Local0)
+                    }
+                }
+            }
+        }
+        Store(0xff, SMB0)
+        Release(\P4SM)
+        Return(Ones)
+    }
+    Method(WBLK, 3, Serialized) {
+        If(LNot(LEqual(Acquire(\P4SM, 0xffff), 0x0))) {
+            Return(Ones)
+        }
+        Store(0xff, SMB0)
+        And(SMB2, 0x3, Local0)
+        If(Local0) {
+            Store(0x20, SMB3)
+        }
+        Store(0x0, Local1)
+        Store(0x5, Local0)
+        While(Local0) {
+            If(HBSY()) {
+                Decrement(Local0)
+            }
+            Else {
+                Store(DerefOf(Index(RBUF, Local1)), SMB8)
+                Increment(Local1)
+                Store(DerefOf(Index(RBUF, Local1)), SMB9)
+                Increment(Local1)
+                Store(DerefOf(Index(RBUF, Local1)), SMBA)
+                Increment(Local1)
+                Store(DerefOf(Index(RBUF, Local1)), SMBB)
+                Increment(Local1)
+                Store(DerefOf(Index(RBUF, Local1)), SMBC)
+                Increment(Local1)
+                Store(DerefOf(Index(RBUF, Local1)), SMBD)
+                Increment(Local1)
+                Store(DerefOf(Index(RBUF, Local1)), SMBE)
+                Increment(Local1)
+                Store(DerefOf(Index(RBUF, Local1)), SMBF)
+                Increment(Local1)
+                And(Arg0, 0xfe, SMB4)
+                Store(Arg1, SMB7)
+                Store(Arg2, SMB5)
+                Store(0x15, SMB3)
+                If(WTSB()) {
+                    If(LGreater(Arg1, 0x8)) {
+                        Subtract(Arg1, 0x8, Arg1)
+                    }
+                    Else {
+                        Store(0xff, SMB0)
+                        Release(\P4SM)
+                        Return(0x1)
+                    }
+                }
+                Else {
+                    Decrement(Local0)
+                }
+                While(Local0) {
+                    Store(DerefOf(Index(RBUF, Local1)), SMB8)
+                    Increment(Local1)
+                    Store(DerefOf(Index(RBUF, Local1)), SMB9)
+                    Increment(Local1)
+                    Store(DerefOf(Index(RBUF, Local1)), SMBA)
+                    Increment(Local1)
+                    Store(DerefOf(Index(RBUF, Local1)), SMBB)
+                    Increment(Local1)
+                    Store(DerefOf(Index(RBUF, Local1)), SMBC)
+                    Increment(Local1)
+                    Store(DerefOf(Index(RBUF, Local1)), SMBD)
+                    Increment(Local1)
+                    Store(DerefOf(Index(RBUF, Local1)), SMBE)
+                    Increment(Local1)
+                    Store(DerefOf(Index(RBUF, Local1)), SMBF)
+                    Increment(Local1)
+                    Store(0x10, SMB0)
+                    If(WTSB()) {
+                        If(LGreater(Arg1, 0x8)) {
+                            Subtract(Arg1, 0x8, Arg1)
+                        }
+                        Else {
+                            Store(0xff, SMB0)
+                            Release(\P4SM)
+                            Return(0x1)
+                        }
+                    }
+                    Else {
+                        Decrement(Local0)
+                    }
+                }
+            }
+        }
+        Store(0xff, SMB0)
+        Release(\P4SM)
+        Return(Ones)
+    }
+}
+Scope(\) {
+    Name(TSP_, 0xa)
+    Name(TC1_, 0x2)
+    Name(TC2_, 0xa)
+}
+Scope(\_TZ_) {
+    Name(HLMT, 0x0)
+    Name(LLMT, 0x0)
+    Name(F1PW, 0x0)
+    Name(F2PW, 0x0)
+    Name(LTMP, 0x0)
+    Name(FANL, 0x0)
+    Method(KELV, 1) {
+        And(Arg0, 0xff, Local0)
+        If(LNot(LLess(Local0, 0x80))) {
+            Subtract(0x0100, Local0, Local0)
+            Multiply(Local0, 0xa, Local0)
+            Subtract(0x0aac, Local0, Local0)
+            Return(Local0)
+        }
+        Multiply(Local0, 0xa, Local0)
+        Add(Local0, 0x0aac, Local0)
+        Return(Local0)
+    }
+    Method(CELC, 1) {
+        Subtract(Arg0, 0x0aac, Local0)
+        Divide(Local0, 0xa, Local1, Local0)
+        Return(Local0)
+    }
+    Name(PLCY, 0x0)
+    ThermalZone(THRM) {
+        Method(_CRT) {
+            Return(KELV(TCRT))
+        }
+        Method(_TMP) {
+            Store(0x5, Local1)
+            While(Local1) {
+                Store(GTMP(), Local0)
+                If(LGreater(Local0, TCRT)) {
+                    Decrement(Local1)
+                }
+                Else {
+                    Store(0x0, Local1)
+                }
+            }
+            Return(KELV(Local0))
+        }
+        Name(_PSL, Package(0x1) {
+            \_PR_.CPU1,
+        })
+        Method(_TSP) {
+            Multiply(TSP_, 0xa, Local0)
+            Return(Local0)
+        }
+        Method(_TC1) {
+            Return(TC1_)
+        }
+        Method(_TC2) {
+            Return(TC2_)
+        }
+        Method(_PSV) {
+            If(PLCY) {
+                Return(KELV(PPSV))
+            }
+            Else {
+                Return(KELV(TPSV))
+            }
+        }
+        Name(_AL0, Package(0x1) {
+            FN00,
+        })
+        Method(_AC0) {
+            If(PLCY) {
+                Return(KELV(PAC0))
+            }
+            Else {
+                Return(KELV(TAC0))
+            }
+        }
+        Method(_SCP, 1) {
+            TCHG()
+            Notify(THRM, 0x81)
+        }
+    }
+    Method(TRMS, 1) {
+        If(Arg0) {
+            \_TZ_.TMSS(Arg0)
+        }
+    }
+    Method(TRMW, 1) {
+        If(Arg0) {
+            If(LLess(Arg0, 0x4)) {
+                \_TZ_.TMSW(Arg0)
+                \_TZ_.TCHG()
+            }
+        }
+    }
+    Method(TCHG, 0, Serialized) {
+        MINT()
+        GTMP()
+        If(LNot(LLess(LTMP, 0x80))) {
+            Store(0x0, LTMP)
+        }
+        If(PLCY) {
+            Store(\_TZ_.THRM._PSV(), Local0)
+            Store(CELC(Local0), Local0)
+            Store(\_TZ_.THRM._AC0(), Local1)
+            Store(CELC(Local1), Local1)
+            If(LGreater(LTMP, TCRT)) {
+                Store(0x7f, HLMT)
+                Store(TCRT, LLMT)
+                Store(0x10, FANL)
+            }
+            Else {
+                If(LGreater(LTMP, Local1)) {
+                    Store(TCRT, HLMT)
+                    Store(Local1, LLMT)
+                    Store(0x11, FANL)
+                }
+                Else {
+                    If(LGreater(LTMP, Local0)) {
+                        Store(Local1, HLMT)
+                        Store(Local0, LLMT)
+                        Store(0x12, FANL)
+                    }
+                    Else {
+                        Store(Local0, HLMT)
+                        Store(0xc9, LLMT)
+                        Store(0x13, FANL)
+                    }
+                }
+            }
+        }
+        Else {
+            If(LNot(LLess(LTMP, T1HL))) {
+                Store(T0HL, HLMT)
+                Store(T0LL, LLMT)
+                Store(T0F1, F1PW)
+                Store(T0F2, F2PW)
+                Store(0x0, FANL)
+            }
+            Else {
+                If(LNot(LLess(LTMP, T2HL))) {
+                    Store(T1HL, HLMT)
+                    Store(T1LL, LLMT)
+                    Store(T1F1, F1PW)
+                    Store(T1F2, F2PW)
+                    Store(0x1, FANL)
+                }
+                Else {
+                    If(LNot(LLess(LTMP, T3HL))) {
+                        Store(T2HL, HLMT)
+                        Store(T2LL, LLMT)
+                        Store(T2F1, F1PW)
+                        Store(T2F2, F2PW)
+                        Store(0x2, FANL)
+                    }
+                    Else {
+                        If(LNot(LLess(LTMP, T4HL))) {
+                            Store(T3HL, HLMT)
+                            Store(T3LL, LLMT)
+                            Store(T3F1, F1PW)
+                            Store(T3F2, F2PW)
+                            Store(0x3, FANL)
+                        }
+                        Else {
+                            If(LNot(LLess(LTMP, T5HL))) {
+                                Store(T4HL, HLMT)
+                                Store(T4LL, LLMT)
+                                Store(T4F1, F1PW)
+                                Store(T4F2, F2PW)
+                                Store(0x4, FANL)
+                            }
+                            Else {
+                                If(LNot(LLess(LTMP, T6HL))) {
+                                    Store(T5HL, HLMT)
+                                    Store(T5LL, LLMT)
+                                    Store(T5F1, F1PW)
+                                    Store(T5F2, F2PW)
+                                    Store(0x5, FANL)
+                                }
+                                Else {
+                                    If(LNot(LLess(LTMP, T7HL))) {
+                                        Store(T6HL, HLMT)
+                                        Store(T6LL, LLMT)
+                                        Store(T6F1, F1PW)
+                                        Store(T6F2, F2PW)
+                                        Store(0x6, FANL)
+                                    }
+                                    Else {
+                                        Store(T7HL, HLMT)
+                                        Store(T7LL, LLMT)
+                                        Store(T7F1, F1PW)
+                                        Store(T7F2, F2PW)
+                                        Store(0x7, FANL)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        STML(HLMT, LLMT)
+        FCTR(FANL, F1PW, F2PW)
+        UMIT()
+    }
+    Method(GTMP, 0, Serialized) {
+        Store(RTMP(), Local0)
+        If(And(\TDO1, 0x80)) {
+            Subtract(0x0100, \TDO1, Local1)
+            Subtract(Local0, Local1, Local0)
+        }
+        Else {
+            Add(Local0, \TDO1, Local0)
+            If(LGreater(Local0, 0x7f)) {
+                Store(0x7f, Local0)
+            }
+        }
+        Store(Local0, LTMP)
+        Return(Local0)
+    }
+    Method(STML, 2, Serialized) {
+        Store(Arg0, Local1)
+        Store(Arg1, Local2)
+        If(And(\TDO1, 0x80)) {
+            Subtract(0x0100, \TDO1, Local3)
+            Add(Arg0, Local3, Local1)
+            If(LGreater(Local1, 0x7f)) {
+                Store(0x7f, Local1)
+            }
+            Add(Arg1, Local3, Local2)
+            If(LGreater(Local2, 0x7f)) {
+                Store(0x7f, Local2)
+            }
+        }
+        Else {
+            Subtract(Arg0, \TDO1, Local1)
+            Subtract(Arg1, \TDO1, Local2)
+        }
+        WTML(Local1, Local2)
+    }
+}
+Scope(\) {
+    Method(TZEV, 0, Serialized) {
+        \_TZ_.TCHG()
+        Notify(\_TZ_.THRM, 0x80)
+    }
+}
+Scope(\) {
+    Name(FAN1, 0x0)
+    Name(FAN2, 0x0)
+    Device(FN00) {
+        Name(_HID, 0x0b0cd041)
+        Name(_PR0, Package(0x1) {
+            GFAN,
+        })
+    }
+    PowerResource(GFAN, 0, 0) {
+        Method(_STA) {
+            Return(FAN1)
+        }
+        Method(_ON_) {
+            Store(0x1, FAN1)
+        }
+        Method(_OFF) {
+            Store(0x0, FAN1)
+        }
+    }
+    Name(\_SB_.PCI0.SBRG._PR0, Package(0x1) {
+        GFAN,
+    })
+    Method(FANW, 1) {
+        Noop
+    }
+    Method(FANS, 1) {
+        If(Arg0) {
+            \GFAN._OFF()
+        }
+    }
+}
+Scope(\_TZ_) {
+    Method(TMSW, 1) {
+    }
+    Method(TMSS, 1) {
+        If(Arg0) {
+            RBYT(0x5c, 0x41)
+            RBYT(0x5c, 0x42)
+        }
+    }
+    Name(PPLY, 0x0)
+    Name(MSK1, 0x0)
+    Name(MSK2, 0x0)
+    Method(MINT, 0, Serialized) {
+        Store(RBYT(0x5c, 0x74), MSK1)
+        Store(RBYT(0x5c, 0x75), MSK2)
+        WBYT(0x5c, 0x74, 0xfd)
+        WBYT(0x5c, 0x75, 0xff)
+    }
+    Method(WTML, 2, Serialized) {
+        Store(Arg0, Local1)
+        Store(Arg1, Local2)
+        WBYT(0x5c, 0x4f, Local1)
+        WBYT(0x5c, 0x4e, Local2)
+        Store(0xc8, Local0)
+        While(Local0) {
+            RBYT(0x5c, 0x42)
+            Store(RBYT(0x5c, 0x41), Local1)
+            And(Local1, 0x10, Local1)
+            If(Local1) {
+                Stall(0xa)
+                Decrement(Local0)
+            }
+            Else {
+                Store(Zero, Local0)
+            }
+        }
+        RBYT(0x5c, 0x41)
+        RBYT(0x5c, 0x42)
+    }
+    Method(UMIT, 0, Serialized) {
+        WBYT(0x5c, 0x74, MSK1)
+        WBYT(0x5c, 0x75, MSK2)
+    }
+    Method(RTMP) {
+        Store(RBYT(0x5c, 0x25), Local0)
+        If(Not(Local0)) {
+            If(LNot(LEqual(Local0, 0x80))) {
+                Store(Local0, LTMP)
+            }
+        }
+        Return(LTMP)
+    }
+    Method(RFAN) {
+        Store(RBYT(0x5c, 0x28), Local0)
+        Store(RBYT(0x5c, 0x29), Local1)
+        ShiftLeft(Local1, 0x8, Local1)
+        Add(Local1, Local0, Local0)
+        If(LEqual(Local0, 0xffff)) {
+            Return(0x0)
+        }
+        Else {
+            If(LNot(LGreater(Local0, 0xc8))) {
+                Return(0xfe)
+            }
+        }
+        Store(0x005265c0, Local2)
+        Divide(Local2, Local0, Local3, Local4)
+        Divide(Local4, 0x64, Local3, Local4)
+        Return(Local4)
+    }
+}
+Scope(\_SB_) {
+    Device(LID_) {
+        Name(_HID, 0x0d0cd041)
+        Method(_LID) {
+            Return(\GLID())
+        }
+    }
+}
+Scope(\) {
+    Method(LDEV, 0, Serialized) {
+        \TLID()
+        Notify(\_SB_.LID_, 0x80)
+    }
+}
+Scope(\) {
+    Method(\DIAG, 1) {
+        Store(Arg0, DBG8)
+    }
+    OperationRegion(\GPSC, SystemIO, 0x0848, 0x2)
+    Field(\GPSC, ByteAcc, NoLock, Preserve) {
+        SMCM,	8,
+        SMST,	8
+    }
+    Method(\ISMI, 1, Serialized) {
+        Store(Arg0, SMCM)
+    }
+    OperationRegion(\ECMS, SystemIO, 0x2000, 0x0100)
+    Field(\ECMS, ByteAcc, Lock, Preserve) {
+        Offset(0x80),
+        IKFG,	8,
+        FRPN,	16,
+        RAMB,	32,
+        AVOL,	8,
+        LBTN,	8,
+        ERRF,	8,
+        OCLK,	8,
+        WIDE,	1,
+        OVCK,	2,
+        SLPN,	3,
+        Offset(0x8c),
+        CPUR,	6,
+        CPUF,	2,
+        LBT2,	8,
+        PCMS,	8,
+        ALSL,	8,
+        ALAE,	1,
+        ALDE,	1,
+        ALSP,	1,
+        Offset(0x91),
+        RER0,	144,
+        RESF,	1,
+        Offset(0xa4),
+        RER1,	8,
+        WLEN,	1,
+        BTEN,	1,
+        RESE,	6,
+        ALPS,	1
+    }
+    OperationRegion(RAMW, SystemMemory, RAMB, 0x0100)
+    Field(RAMW, AnyAcc, NoLock, Preserve) {
+        TRTY,	8,
+        FSFN,	8,
+        FSTA,	16,
+        FADR,	32,
+        FSIZ,	16,
+        ACTD,	8,
+        AVLD,	8,
+        SETD,	8,
+        ACPF,	8,
+        DCPF,	8,
+        DCP2,	8,
+        DCTP,	8,
+        CTPY,	8,
+        PADL,	16,
+        CADL,	16,
+        CSTE,	16,
+        NSTE,	16,
+        SSTE,	16,
+        SFUN,	8,
+        TPSV,	8,
+        TAC0,	8,
+        TCRT,	8,
+        TDO1,	8,
+        TDO2,	8,
+        PPSV,	8,
+        PAC0,	8,
+        T0HL,	8,
+        T0LL,	8,
+        T0F1,	8,
+        T0F2,	8,
+        T1HL,	8,
+        T1LL,	8,
+        T1F1,	8,
+        T1F2,	8,
+        T2HL,	8,
+        T2LL,	8,
+        T2F1,	8,
+        T2F2,	8,
+        T3HL,	8,
+        T3LL,	8,
+        T3F1,	8,
+        T3F2,	8,
+        T4HL,	8,
+        T4LL,	8,
+        T4F1,	8,
+        T4F2,	8,
+        T5HL,	8,
+        T5LL,	8,
+        T5F1,	8,
+        T5F2,	8,
+        T6HL,	8,
+        T6LL,	8,
+        T6F1,	8,
+        T6F2,	8,
+        T7HL,	8,
+        T7LL,	8,
+        T7F1,	8,
+        T7F2,	8,
+        SLPT,	8,
+        AIBF,	8,
+        IDES,	8,
+        VGAF,	16,
+        C4CP,	8,
+        LUXS,	8,
+        LUXL,	8,
+        LUXH,	8,
+        LUXF,	8,
+        MNAM,	64,
+        DBR1,	32,
+        DBR2,	32,
+        DBR3,	32,
+        DBR4,	32,
+        LCDV,	32,
+        LCDR,	8
+    }
+    OperationRegion(\DBGM, SystemMemory, 0x000d0000, 0x4)
+    Field(\DBGM, DWordAcc, NoLock, Preserve) {
+        DBGG,	32
+    }
+    Name(OSFG, 0x0)
+    Name(OS9X, 0x1)
+    Name(OS98, 0x2)
+    Name(OSME, 0x4)
+    Name(OS2K, 0x8)
+    Name(OSXP, 0x10)
+    Method(MSOS) {
+        If(CondRefOf(\_OSI, Local0)) {
+            Store(OSXP, OSFG)
+        }
+        Else {
+            If(MCTH(\_OS_, "Microsoft Windows")) {
+                Store(OS98, OSFG)
+            }
+            Else {
+                If(MCTH(\_OS_, "Microsoft WindowsME: Millennium Edition")) {
+                    Store(OSME, OSFG)
+                }
+                Else {
+                    If(MCTH(\_OS_, "Microsoft Windows NT")) {
+                        Store(OS2K, OSFG)
+                    }
+                    Else {
+                        Store(OSXP, OSFG)
+                    }
+                }
+            }
+        }
+        Return(OSFG)
+    }
+    Method(\DBGR, 4) {
+        Store(Arg0, DBR1)
+        Store(Arg1, DBR2)
+        Store(Arg2, DBR3)
+        Store(Arg3, DBR4)
+        \ISMI(0x96)
+    }
+    Name(ONAM, "ASUSTEK")
+    Method(ADVG) {
+        If(\_SB_.PCI0.P0P1.VGA_.PRST()) {
+            Return(\_SB_.PCI0.P0P1.VGA_.ADVD())
+        }
+        Return(0x3)
+    }
+    Method(SWHG, 1, Serialized) {
+        If(\_SB_.PCI0.P0P1.VGA_.PRST()) {
+            \_SB_.PCI0.P0P1.VGA_.SWHD(Arg0)
+            Return(One)
+        }
+        Return(Zero)
+    }
+    Method(NATK) {
+        If(\_SB_.PCI0.P0P1.VGA_.PRST()) {
+            Return(\_SB_.PCI0.P0P1.VGA_.NATK())
+        }
+        Return(One)
+    }
+    Name(PWAC, Buffer(0x10) {0x17, 0x2e, 0x3d, 0x49, 0x58, 0x60, 0x64, 0x68, 0x6c, 0x70, 0x73, 0x77, 0x7b, 0x7f, 0x83, 0x88 })
+    Name(PWDC, Buffer(0x10) {0xf, 0x26, 0x36, 0x41, 0x51, 0x58, 0x5c, 0x60, 0x64, 0x68, 0x6c, 0x70, 0x73, 0x77, 0x7b, 0x7f })
+}
+Scope(\_SB_.PCI0) {
+    Method(_INI) {
+        \MSOS()
+    }
+}
+Scope(\_SB_.PCI0) {
+    Device(AC0_) {
+        Name(_HID, "ACPI0003")
+        Method(_PSR) {
+            Return(\ACPF)
+        }
+        Name(_PCL, Package(0x1) {
+            \_SB_.PCI0,
+        })
+    }
+}
+Scope(\) {
+    Name(ACWA, 0x0)
+    Method(ACEV) {
+        If(\ACPS()) {
+            Store(0x2, ACWA)
+            Store(One, \ACPF)
+            Store(0x58, Local0)
+        }
+        Else {
+            Store(Zero, \ACPF)
+            Store(0x57, Local0)
+        }
+        \_SB_.PCI0.SBRG.EC0_.STBR()
+        Notify(\_SB_.PCI0.AC0_, 0x80)
+        If(\_SB_.ATKP) {
+            Notify(\_SB_.ATKD, Local0)
+        }
+        Sleep(0x64)
+        \TGAC()
+        Notify(\_PR_.CPU1, 0x80)
+        Notify(\_PR_.CPU1, 0x81)
+        Sleep(0xa)
+        NBAT(0x80)
+    }
+}
+Scope(\_SB_.PCI0) {
+    Device(BAT0) {
+        Name(_HID, 0x0a0cd041)
+        Name(_UID, 0x0)
+        Name(_PCL, Package(0x1) {
+            \_SB_.PCI0,
+        })
+        Method(_STA) {
+            If(BATP(0x0)) {
+                Return(0x1f)
+            }
+            Else {
+                Return(0xf)
+            }
+        }
+        Name(LOW2, 0x012c)
+        Name(DVOT, 0xe)
+        Name(PUNT, One)
+        Name(LFCC, 0x1770)
+        Name(NBIF, Package(0xd) {
+            0x0,
+            0xffffffff,
+            0xffffffff,
+            0x1,
+            0xffffffff,
+            0xffffffff,
+            0xffffffff,
+            0xffffffff,
+            0xffffffff,
+            "",
+            "",
+            "",
+            "",
+        })
+        Name(PBIF, Package(0xd) {
+            0x1,
+            0x1770,
+            0x1770,
+            0x1,
+            0x39d0,
+            0x0258,
+            0x012c,
+            0x3c,
+            0x3c,
+            "M3N",
+            " ",
+            "LIon",
+            "ASUSTek",
+        })
+        Name(PBST, Package(0x4) {
+            0x0,
+            0xffffffff,
+            0xffffffff,
+            0xffffffff,
+        })
+        Method(FBIF, 5) {
+            Store(Arg0, PUNT)
+            Store(Arg1, Local1)
+            Store(Arg2, Local2)
+            If(LEqual(PUNT, 0x0)) {
+                Multiply(Local1, 0xa, Local1)
+                Multiply(Local2, 0xa, Local2)
+            }
+            Store(Arg0, Index(PBIF, 0x0))
+            Store(Local1, Index(PBIF, 0x1))
+            Store(Local2, Index(PBIF, 0x2))
+            Store(Local2, LFCC)
+            Store(Arg3, Index(PBIF, 0x3))
+            Store(Arg4, Index(PBIF, 0x4))
+            Divide(Local1, 0xa, Local3, Local5)
+            Store(Local5, Index(PBIF, 0x5))
+            ShiftRight(Local5, 0x1, Local6)
+            Store(Local6, Index(PBIF, 0x6))
+            Store(Local6, LOW2)
+            Divide(Local1, 0x64, Local3, Local7)
+            Store(Local7, Index(PBIF, 0x7))
+            Store(Local7, Index(PBIF, 0x8))
+        }
+        Method(CBIF) {
+            If(PUNT) {
+                Store(DerefOf(Index(PBIF, 0x4)), Local0)
+                Add(Local0, 0x01f4, Local0)
+                Divide(Local0, 0x03e8, Local1, DVOT)
+                Store(Zero, Index(PBIF, 0x0))
+                Multiply(DerefOf(Index(PBIF, 0x1)), DVOT, Index(PBIF, 0x1))
+                Multiply(DerefOf(Index(PBIF, 0x2)), DVOT, Index(PBIF, 0x2))
+                Multiply(DerefOf(Index(PBIF, 0x5)), DVOT, Index(PBIF, 0x5))
+                Multiply(DerefOf(Index(PBIF, 0x6)), DVOT, Index(PBIF, 0x6))
+                Multiply(DerefOf(Index(PBIF, 0x7)), DVOT, Index(PBIF, 0x7))
+                Multiply(DerefOf(Index(PBIF, 0x8)), DVOT, Index(PBIF, 0x8))
+            }
+        }
+        Method(_BIF) {
+            If(LNot(BATP(0x0))) {
+                Return(NBIF)
+            }
+            Acquire(MMPX, 0xffff)
+            \BATS(0x0)
+            Store(\_SB_.PCI0.SBRG.EC0_.BIF9(), Index(PBIF, 0x9))
+            Store(\ONAM, Index(PBIF, 0xc))
+            Store(\_SB_.PCI0.SBRG.EC0_.BIF0(), Local0)
+            Store(\_SB_.PCI0.SBRG.EC0_.BIF1(), Local1)
+            Store(\_SB_.PCI0.SBRG.EC0_.BIF2(), Local2)
+            Store(\_SB_.PCI0.SBRG.EC0_.BIF3(), Local3)
+            Store(\_SB_.PCI0.SBRG.EC0_.BIF4(), Local4)
+            Release(MMPX)
+            If(LNot(LEqual(Local0, Ones))) {
+                If(LNot(LEqual(Local1, Ones))) {
+                    If(LNot(LEqual(Local2, Ones))) {
+                        If(LNot(LEqual(Local3, Ones))) {
+                            If(LNot(LEqual(Local4, Ones))) {
+                                FBIF(Local0, Local1, Local2, Local3, Local4)
+                                CBIF()
+                            }
+                        }
+                    }
+                }
+            }
+            If(LEqual(PUNT, 0x0)) {
+                Multiply(Local2, 0xa, Local2)
+            }
+            Store(Local2, LFCC)
+            Return(PBIF)
+        }
+        Method(FBST, 4) {
+            And(Arg1, 0xffff, Local1)
+            If(\ACPF) {
+                Store(One, Local0)
+                If(Local0) {
+                    Store(CHGS(0x0), Local2)
+                    If(LEqual(Local2, 0xffff)) {
+                        If(LGreater(Local1, 0xa0)) {
+                            Store(0x2, Local0)
+                        }
+                        Else {
+                            Store(Zero, Local0)
+                        }
+                    }
+                    Else {
+                        If(Local2) {
+                            Store(0x2, Local0)
+                        }
+                        Else {
+                            Store(Zero, Local0)
+                        }
+                    }
+                }
+                Else {
+                    Store(0x1, Local0)
+                }
+            }
+            Else {
+                Store(0x1, Local0)
+            }
+            If(And(Arg0, 0x0300)) {
+                Or(Local0, 0x4, Local0)
+            }
+            If(LNot(LLess(Local1, 0x8000))) {
+                And(Subtract(0x0, Local1), 0xffff, Local1)
+            }
+            Store(Arg2, Local2)
+            If(LEqual(PUNT, 0x0)) {
+                Multiply(Local1, DVOT, Local1)
+                Multiply(Local2, 0xa, Local2)
+            }
+            And(Local0, 0x2, Local3)
+            Divide(LFCC, 0xc8, Local4, Local5)
+            If(LEqual(Local3, 0x0)) {
+                Subtract(LFCC, Local2, Local3)
+                If(LLess(Local3, Local5)) {
+                    Store(LFCC, Local2)
+                }
+            }
+            Else {
+                If(LNot(LLess(Local2, LFCC))) {
+                    Subtract(LFCC, Local5, Local2)
+                }
+            }
+            If(And(Local0, 0x1)) {
+                Divide(Local2, \MBLF, Local3, Local4)
+                If(LLess(Local1, Local4)) {
+                    Store(Local4, Local1)
+                }
+            }
+            Store(Local0, Index(PBST, 0x0))
+            Store(Local1, Index(PBST, 0x1))
+            Store(Local2, Index(PBST, 0x2))
+            Store(Arg3, Index(PBST, 0x3))
+        }
+        Method(CBST) {
+            If(PUNT) {
+                Multiply(DerefOf(Index(PBST, 0x1)), DVOT, Index(PBST, 0x1))
+                Multiply(DerefOf(Index(PBST, 0x2)), DVOT, Index(PBST, 0x2))
+            }
+        }
+        Method(_BST) {
+            If(LNot(BATP(0x0))) {
+                Store(Zero, Index(PBST, 0x0))
+                Store(Ones, Index(PBST, 0x1))
+                Store(Ones, Index(PBST, 0x2))
+                Store(Ones, Index(PBST, 0x3))
+                Return(PBST)
+            }
+            If(\MES4) {
+                Decrement(\MES4)
+                Return(PBST)
+            }
+            Acquire(MMPX, 0xffff)
+            \BATS(0x0)
+            Store(\_SB_.PCI0.SBRG.EC0_.BSTS(), Local0)
+            If(ACWA) {
+                Store(0x2, Local0)
+                Decrement(ACWA)
+            }
+            Store(\_SB_.PCI0.SBRG.EC0_.BCRT(), Local1)
+            Store(\_SB_.PCI0.SBRG.EC0_.BRCP(), Local2)
+            Store(\_SB_.PCI0.SBRG.EC0_.BVOT(), Local3)
+            Release(MMPX)
+            If(LNot(LEqual(Local0, Ones))) {
+                If(LNot(LEqual(Local1, Ones))) {
+                    If(LNot(LEqual(Local2, Ones))) {
+                        If(LNot(LEqual(Local3, Ones))) {
+                            FBST(Local0, Local1, Local2, Local3)
+                            CBST()
+                        }
+                    }
+                }
+            }
+            Return(PBST)
+        }
+    }
+    Name(B0CR, 0x0)
+    Name(B1CR, 0x0)
+    Method(GGCC, 1, Serialized) {
+        Acquire(MMPX, 0xffff)
+        \BATS(Arg0)
+        Store(\_SB_.PCI0.SBRG.EC0_.BCRT(), Local0)
+        Release(MMPX)
+        If(LEqual(Local0, Ones)) {
+            If(Arg0) {
+                Store(B1CR, Local0)
+            }
+            Else {
+                Store(B0CR, Local0)
+            }
+        }
+        And(Local0, 0x8000, Local1)
+        If(Local1) {
+            Store(0x0, Local0)
+        }
+        If(Arg0) {
+            Store(Local0, B1CR)
+        }
+        Else {
+            Store(Local0, B0CR)
+        }
+        Return(Local0)
+    }
+}
+Scope(\_SB_.PCI0.SBRG.EC0_) {
+    Name(BADR, 0xb)
+    Name(CADR, 0x9)
+    Name(SADR, 0xa)
+    Method(ALMH, 1) {
+        If(LEqual(Arg0, BADR)) {
+            NBAT(0x80)
+        }
+    }
+    Method(BIFW, 1) {
+        Store(SMBR(RDWD, BADR, Arg0), Local0)
+        Store(DerefOf(Index(Local0, 0x0)), Local1)
+        If(Local1) {
+            Return(Ones)
+        }
+        Else {
+            Return(DerefOf(Index(Local0, 0x2)))
+        }
+    }
+    Method(BIF0) {
+        Store(One, Local1)
+        Store(One, Local2)
+        While(And(LNot(LEqual(Local1, 0x0)), LNot(LGreater(Local2, 0x3)))) {
+            Store(SMBR(RDWD, BADR, 0x3), Local0)
+            Store(DerefOf(Index(Local0, 0x0)), Local1)
+            Increment(Local2)
+        }
+        If(Local1) {
+            Return(Ones)
+        }
+        Else {
+            Store(DerefOf(Index(Local0, 0x2)), Local2)
+            ShiftRight(Local2, 0xf, Local2)
+            And(Local2, 0x1, Local2)
+            XOr(Local2, 0x1, Local2)
+            Return(Local2)
+        }
+    }
+    Method(BIF1) {
+        Store(Ones, Local1)
+        Store(One, Local0)
+        While(And(LEqual(Local1, Ones), LNot(LGreater(Local0, 0x3)))) {
+            Store(BIFW(0x18), Local1)
+            Increment(Local0)
+        }
+        Return(Local1)
+    }
+    Method(BIF2) {
+        Store(Ones, Local1)
+        Store(One, Local0)
+        While(And(LEqual(Local1, Ones), LNot(LGreater(Local0, 0x3)))) {
+            Store(BIFW(0x10), Local1)
+            Increment(Local0)
+        }
+        Return(Local1)
+    }
+    Method(BIF3) {
+        Store(Ones, Local1)
+        Store(One, Local0)
+        While(And(LEqual(Local1, Ones), LNot(LGreater(Local0, 0x3)))) {
+            Store(BIFW(0x3), Local1)
+            Increment(Local0)
+        }
+        If(LNot(LEqual(Local1, Ones))) {
+            ShiftRight(Local1, 0x9, Local1)
+            And(Local1, 0x1, Local1)
+            XOr(Local1, 0x1, Local1)
+        }
+        Return(Local1)
+    }
+    Method(BIF4) {
+        Store(Ones, Local1)
+        Store(One, Local0)
+        While(And(LEqual(Local1, Ones), LNot(LGreater(Local0, 0x3)))) {
+            Store(BIFW(0x19), Local1)
+            Increment(Local0)
+        }
+        Return(Local1)
+    }
+    Method(BIF9) {
+        Name(BSTR, Buffer(0x20) { })
+        Store(SMBR(RDBL, BADR, 0x21), Local0)
+        If(LNot(LEqual(DerefOf(Index(Local0, 0x0)), 0x0))) {
+            Store(0x0, Index(BSTR, 0x0))
+        }
+        Else {
+            Store(DerefOf(Index(Local0, 0x2)), BSTR)
+            Store(0x0, Index(BSTR, DerefOf(Index(Local0, 0x1))))
+        }
+        Return(BSTR)
+    }
+    Method(BSTS) {
+        Return(BIFW(0x16))
+    }
+    Method(BCRT) {
+        Return(BIFW(0xa))
+    }
+    Method(BRCP) {
+        Return(BIFW(0xf))
+    }
+    Method(BVOT) {
+        Return(BIFW(0x9))
+    }
+}
+Scope(\) {
+    Mutex(MMPX, 0)
+    Method(BATP, 1, Serialized) {
+        If(Arg0) {
+            Return(\DCP2)
+        }
+        Else {
+            Return(\DCPF)
+        }
+    }
+    Method(BTEV, 0, Serialized) {
+        Store(\DCPS(0x0), \DCPF)
+        \TGDC(0x0)
+        Notify(\_SB_.PCI0.BAT0, 0x81)
+        Notify(\_SB_.PCI0.AC0_, 0x80)
+    }
+    Method(NBAT, 1) {
+        If(BATP(0x0)) {
+            Notify(\_SB_.PCI0.BAT0, Arg0)
+        }
+    }
+    Method(BTCF, 0, Serialized) {
+        Notify(\_SB_.PCI0.BAT0, 0x81)
+        Notify(\_SB_.PCI0.AC0_, 0x80)
+    }
+    Method(BLEV) {
+        If(\_SB_.ATKP) {
+            Notify(\_SB_.ATKD, 0x6e)
+        }
+        Else {
+            If(BATP(0x0)) {
+                Notify(\_SB_.PCI0.BAT0, 0x80)
+            }
+        }
+    }
+}
+Scope(\_SB_) {
+    Device(SLPB) {
+        Name(_HID, 0x0e0cd041)
+        Method(_PRW) {
+            Return(Package(0x2) {
+                0xb,
+                0x4,
+            })
+        }
+    }
+}
+Scope(\) {
+    Name(MES4, Zero)
+    Method(OEMS, 1) {
+        If(LEqual(Arg0, 0x3)) {
+            If(LNot(LGreater(\OSFG, \OSME))) {
+                Store(One, \WIDE)
+            }
+            Else {
+                Store(Zero, \WIDE)
+            }
+        }
+        SBRS(Arg0)
+        \_SB_.PCI0.SBRG.EC0_.EC0S(Arg0)
+        If(LEqual(Arg0, 0x4)) {
+            If(LEqual(OSFG, OS2K)) {
+                Store(Arg0, SLPN)
+            }
+        }
+        Add(Arg0, 0xd0, DBG8)
+        Store(Arg0, SLPT)
+        If(Arg0) {
+            STRP(0x1)
+        }
+        PRJS(Arg0)
+        ISMI(0x9d)
+    }
+    Method(OEMW, 1) {
+        Store(Zero, SLPT)
+        \_SB_.PCI0.SBRG.EC0_.EC0W(Arg0)
+        If(LEqual(Arg0, 0x4)) {
+            If(LNot(LGreater(\OSFG, \OSME))) {
+                Store(0x2, MES4)
+            }
+            Else {
+                Store(Zero, MES4)
+            }
+        }
+        \_SB_.PCI0.CBS0.CBSW(Arg0)
+        SBRW(Arg0)
+        If(LEqual(Arg0, 0x4)) {
+            Notify(\_SB_.SLPB, 0x2)
+        }
+        PRJW(Arg0)
+        Add(Arg0, 0xf0, DBG8)
+        ISMI(0x9e)
+    }
+}
+Scope(\_SB_.ATKD) {
+    Method(FSMI, 1) {
+        Store(Arg0, \FSFN)
+        Or(Arg0, 0xa0, Local0)
+        Store(Local0, \DBG8)
+        ISMI(0x90)
+        Return(\FSTA)
+    }
+    Method(FLSH, 1) {
+        Store(Arg0, \FSTA)
+        FSMI(0x0)
+    }
+    Method(FINI, 1) {
+        Store(Arg0, \FADR)
+        Return(FSMI(0x1))
+    }
+    Method(FERS, 1) {
+        Store(Arg0, \FSTA)
+        Return(FSMI(0x2))
+    }
+    Method(FWRI, 1) {
+        Store(Arg0, \FADR)
+        Store(0x1000, \FSIZ)
+        Return(Subtract(0x1000, FSMI(0x3)))
+    }
+    Method(FWRP) {
+        Store(0x0, \FSIZ)
+        Return(Subtract(0x1000, FSMI(0x3)))
+    }
+    Method(FEBW, 1) {
+        Store(Arg0, \FADR)
+        Return(FSMI(0x4))
+    }
+    Method(FEBR, 1) {
+        Store(Arg0, \FADR)
+        Return(FSMI(0x5))
+    }
+    Method(FEDW) {
+        Return(FSMI(0x6))
+    }
+}
+Scope(\) {
+    Method(ACPS, 0, Serialized) {
+        Store(\_SB_.PCI0.SBRG.EC0_.RPIN(0x64), Local0)
+        XOr(Local0, 0x1, Local0)
+        Return(Local0)
+    }
+    Method(CHGS, 1, Serialized) {
+        Store(\_SB_.PCI0.SBRG.EC0_.RPIN(0x43), Local0)
+        XOr(Local0, 0x1, Local0)
+        Return(Local0)
+    }
+    Method(DCPS, 1, Serialized) {
+        Store(\_SB_.PCI0.SBRG.EC0_.RPIN(0x55), Local0)
+        XOr(Local0, 0x1, Local0)
+        Return(Local0)
+    }
+    Method(BATS, 1, Serialized) {
+    }
+    Name(LCDB, 0x0)
+    Method(PRJS, 1, Serialized) {
+        If(LNot(LGreater(Arg0, 0x3))) {
+            Store(\RGPL(0x7, 0x1), LCDB)
+            \SGPL(0x7, 0x1, 0x0)
+        }
+        Store(Arg0, SLPN)
+    }
+    Method(PRJW, 1, Serialized) {
+        If(LNot(LGreater(Arg0, 0x3))) {
+            \SGPL(0x7, 0x1, LCDB)
+        }
+    }
+    Method(GLID, 0, Serialized) {
+        Return(\_SB_.PCI0.SBRG.EC0_.RPIN(0x54))
+    }
+    Method(TLID, 0, Serialized) {
+    }
+    Method(TGAC, 0, Serialized) {
+    }
+    Method(TGDC, 1, Serialized) {
+    }
+    Method(FCTR, 3, Serialized) {
+        If(LEqual(Arg0, 0x4)) {
+            WBYT(0x5c, 0x5c, 0xe2)
+            WBYT(0x5c, 0x30, 0x73)
+        }
+        If(LEqual(Arg0, 0x5)) {
+            WBYT(0x5c, 0x5c, 0xe2)
+            WBYT(0x5c, 0x30, 0x0)
+        }
+    }
+    Method(FFCT, 0, Serialized) {
+        WBYT(0x5c, 0x5c, 0xe2)
+        WBYT(0x5c, 0x30, 0x73)
+        Store(0x64, T4HL)
+        Subtract(TAC0, 0x5, Local0)
+        Store(Local0, T4LL)
+        Store(TAC0, T5HL)
+        Store(0x0, T5LL)
+    }
+    Method(AFEN, 0, Serialized) {
+        Store(0x0, T4HL)
+        Store(0x0, T4LL)
+        Store(0x0, T5HL)
+        Store(0x0, T5LL)
+        WBYT(0x5c, 0x5c, 0xc2)
+    }
+    Method(OMLD, 1, Serialized) {
+        \_SB_.PCI0.SBRG.EC0_.SPIN(0x41, Arg0)
+    }
+    Method(OWLD, 1, Serialized) {
+        Store(\RGPL(0xf, 0x1), Local0)
+        If(LEqual(Local0, 0x1)) {
+            Return(0x0)
+        }
+        XOr(Arg0, 0x1, Arg0)
+        \SGPL(0x10, 0x1, Arg0)
+    }
+    Method(OBTD, 1, Serialized) {
+        \SGPL(0xf, 0x1, Arg0)
+        XOr(Arg0, 0x1, Arg0)
+        \SGPL(0x10, 0x1, Arg0)
+    }
+    Method(GBTL, 0, Serialized) {
+        Return(\_SB_.PCI0.SBRG.EC0_.RPIN(0x22))
+    }
+    Method(SBTL, 1, Serialized) {
+        \_SB_.PCI0.SBRG.EC0_.SPIN(0x22, Arg0)
+    }
+    Method(BL2C) {
+        If(LNot(\_SB_.PCI0.SBRG.EC0_.RPIN(0x50))) {
+            Store(0x1, Local1)
+        }
+        Return(Local1)
+    }
+    Method(OPID, 0, Serialized) {
+        Store(RIOP(0x2c, 0x3), Local0)
+        Store(DerefOf(Index(RESN, Local0)), Local1)
+        Return(Local1)
+    }
+    Name(RESN, Package(0x10) {
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x8,
+        0x0,
+        0x0,
+        0x0,
+        0x5,
+        0x0,
+        0x3,
+        0xa,
+        0x0,
+    })
+    Method(STCF, 1, Serialized) {
+        If(LEqual(Arg0, 0x1)) {
+            \_SB_.PCI0.SBRG.EC0_.FNCT(0x84, 0x0)
+        }
+    }
+}
+Scope(\_GPE) {
+    Method(_L00) {
+        TZEV()
+    }
+    Method(_L13) {
+    }
+}
+Scope(\_SB_.PCI0.SBRG.EC0_) {
+    Method(_Q34) {
+        ACEV()
+    }
+    Method(_Q2F) {
+        BTEV()
+    }
+    Method(_Q2E) {
+        LDEV()
+    }
+    Method(_Q50) {
+        BLEV()
+    }
+}
+Scope(\_SB_.PCI0.USB_) {
+    Method(_INI) {
+        If(LNot(LEqual(OSFG, 0x8))) {
+            USB1()
+        }
+    }
+}
+Scope(\_SB_.PCI0.USB2) {
+    Method(_INI) {
+        If(LNot(LEqual(OSFG, 0x8))) {
+            USB1()
+        }
+    }
+}
+Scope(\_SB_.PCI0.USB3) {
+    Method(_INI) {
+        If(LNot(LEqual(OSFG, 0x8))) {
+            USB1()
+        }
+    }
+}
+Scope(\_SB_) {
+    Scope(PCI0) {
+        Name(CRS_, Buffer(0x88) {0x88, 0xd, 0x0, 0x2, 0xc, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0x0, 0x0, 0x0, 0x0, 0x1, 0x47, 0x1, 0xf8, 0xc, 0xf8, 0xc, 0x1, 0x8, 0x88, 0xd, 0x0, 0x1, 0xc, 0x3, 0x0, 0x0, 0x0, 0x0, 0xf7, 0xc, 0x0, 0x0, 0xf8, 0xc, 0x88, 0xd, 0x0, 0x1, 0xc, 0x3, 0x0, 0x0, 0x0, 0xd, 0xff, 0xff, 0x0, 0x0, 0x0, 0xf3, 0x87, 0x17, 0x0, 0x0, 0xc, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xa, 0x0, 0xff, 0xff, 0xb, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2, 0x0, 0x87, 0x17, 0x0, 0x0, 0xc, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xc, 0x0, 0xff, 0xff, 0xd, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2, 0x0, 0x87, 0x17, 0x0, 0x0, 0xc, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x79, 0x0 })
+        CreateDWordField(CRS_, 0x5c, MIN5)
+        CreateDWordField(CRS_, 0x60, MAX5)
+        CreateDWordField(CRS_, 0x68, LEN5)
+        CreateDWordField(CRS_, 0x76, MIN6)
+        CreateDWordField(CRS_, 0x7a, MAX6)
+        CreateDWordField(CRS_, 0x82, LEN6)
+        Method(_CRS) {
+            Store(MG1L, Local0)
+            If(Local0) {
+                Store(MG1B, MIN5)
+                Store(MG1L, LEN5)
+                Add(MIN5, Decrement(Local0), MAX5)
+            }
+            Store(MG2B, MIN6)
+            Store(MG2L, LEN6)
+            Store(MG2L, Local0)
+            Add(MIN6, Decrement(Local0), MAX6)
+            Return(CRS_)
+        }
+    }
+}
+Name(WOTB, 0x0)
+Name(WSSB, 0x0)
+Name(WAXB, 0x0)
+Method(_PTS, 1) {
+    Store(Arg0, DBG8)
+    PTS_(Arg0)
+    Store(0x0, Index(WAKP, 0x0))
+    Store(0x0, Index(WAKP, 0x1))
+    If(LAnd(LEqual(Arg0, 0x4), LEqual(OSFL(), 0x2))) {
+        Sleep(0x0bb8)
+    }
+    Store(ASSB, WSSB)
+    Store(AOTB, WOTB)
+    Store(AAXB, WAXB)
+    Store(Arg0, ASSB)
+    Store(OSFL(), AOTB)
+    Store(Zero, AAXB)
+}
+Method(_WAK, 1) {
+    ShiftLeft(Arg0, 0x4, DBG8)
+    WAK_(Arg0)
+    If(ASSB) {
+        Store(WSSB, ASSB)
+        Store(WOTB, AOTB)
+        Store(WAXB, AAXB)
+    }
+    If(DerefOf(Index(WAKP, 0x0))) {
+        Store(0x0, Index(WAKP, 0x1))
+    }
+    Else {
+        Store(Arg0, Index(WAKP, 0x1))
+    }
+    Return(WAKP)
+}
+Name(\_S0_, Package(0x4) {
+    0x0,
+    0x0,
+    0x0,
+    0x0,
+})
+If(SS1_) {
+    Name(\_S1_, Package(0x4) {
+        0x1,
+        0x0,
+        0x0,
+        0x0,
+    })
+}
+If(SS3_) {
+    Name(\_S3_, Package(0x4) {
+        0x3,
+        0x0,
+        0x0,
+        0x0,
+    })
+}
+If(SS4_) {
+    Name(\_S4_, Package(0x4) {
+        0x4,
+        0x0,
+        0x0,
+        0x0,
+    })
+}
+Name(\_S5_, Package(0x4) {
+    0x5,
+    0x0,
+    0x0,
+    0x0,
+})
+Method(PTS_, 1) {
+    If(Arg0) {
+        \_SB_.PCI0.NPTS(Arg0)
+        \_SB_.PCI0.SBRG.SPTS(Arg0)
+        \_TZ_.TRMS(Arg0)
+        \OEMS(Arg0)
+    }
+}
+Method(WAK_, 1) {
+    \_SB_.PCI0.NWAK(Arg0)
+    \_SB_.PCI0.SBRG.SWAK(Arg0)
+    \_TZ_.TRMW(Arg0)
+    \OEMW(Arg0)
+}
+
+}
+/*
+APIC: Length=84, Revision=1, Checksum=65,
+	OEMID=A M I, OEM Table ID=OEMAPIC, OEM Revision=0x8000629,
+	Creator ID=MSFT, Creator Revision=0x97
+ */
+/*
+MCFG: Length=60, Revision=1, Checksum=106,
+	OEMID=A M I, OEM Table ID=OEMMCFG, OEM Revision=0x8000629,
+	Creator ID=MSFT, Creator Revision=0x97
+ */
+/*
+OEMB: Length=70, Revision=1, Checksum=186,
+	OEMID=A M I, OEM Table ID=AMI_OEM, OEM Revision=0x8000629,
+	Creator ID=MSFT, Creator Revision=0x97
+ */
